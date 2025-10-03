@@ -209,7 +209,7 @@ export default function Landing() {
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#99cc33] to-[#84b02c] rounded-xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-2xl">⏱️</span>
                   </div>
                   <div>
@@ -220,7 +220,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#018ede] to-[#018ede]/80 rounded-xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-2xl">👁️</span>
                   </div>
                   <div>
@@ -231,7 +231,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#99cc33] to-[#99cc33]/80 rounded-xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-2xl">💼</span>
                   </div>
                   <div>
@@ -242,7 +242,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#84b02c] to-[#6f9426] rounded-xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-2xl">🤝</span>
                   </div>
                   <div>
