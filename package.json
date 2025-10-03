@@ -1,0 +1,18 @@
+{
+  "name": "kechita-staff-portal",
+  "private": true,
+  "version": "0.2.0",
+  "packageManager": "pnpm@9.7.0",
+  "scripts": {
+    "dev:api": "pnpm --filter @kechita/api dev",
+    "dev:web": "pnpm --filter @kechita/web dev",
+    "dev:mobile": "pnpm --filter @kechita/mobile start",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

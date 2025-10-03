@@ -1,0 +1,6 @@
+{
+  "name": "@kechita/config",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "tsconfig.base.json"
+}

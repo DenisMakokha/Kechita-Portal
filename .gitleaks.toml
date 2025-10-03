@@ -1,0 +1,15 @@
+
+title = "gitleaks config"
+
+[extend]
+# Use the latest built-in rules, then add any custom ones below.
+
+[allowlist]
+# Allow test fixture secrets (if any) under tests/fixtures
+paths = ['tests/fixtures/']
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API key pattern"
+regex = '''(?i)(api[_-]?key|token|secret)[^\n]{0,20}[:=][^\n]{10,}'''
+tags = ["key", "api", "generic"]
