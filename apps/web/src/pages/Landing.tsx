@@ -99,8 +99,8 @@ export default function Landing() {
             </h1>
             
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
-              Empower your workforce with our comprehensive staff portal. From recruitment to performance management, 
-              handle all HR processes in one powerful platform.
+              Welcome to Kechita Capital's comprehensive staff portal. Access all your HR needs in one place - 
+              from leave applications to performance tracking, everything you need is right here.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -152,10 +152,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need to Manage Your Team
+              Everything You Need as a Kechita Capital Team Member
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comprehensive HR solutions designed for modern organizations
+              Your all-in-one platform for HR services, designed specifically for our team
             </p>
           </div>
 
@@ -184,7 +184,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl font-bold mb-6">
-                Why Choose Kechita Staff Portal?
+                Why Our Staff Portal Stands Out
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start">
@@ -255,17 +255,17 @@ export default function Landing() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Ready to Transform Your HR Operations?
+            Ready to Get Started?
           </h2>
           <p className="text-xl text-gray-600 mb-10">
-            Join modern organizations using Kechita Staff Portal to streamline their HR processes.
+            Access your personalized dashboard and manage all your HR needs in one place.
           </p>
-          <button
-            onClick={() => navigate('/login')}
-            className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all shadow-2xl shadow-blue-500/30 hover:shadow-3xl hover:-translate-y-1"
-          >
-            Get Started Today →
-          </button>
+            <button
+                onClick={() => navigate('/login')}
+                className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all shadow-2xl shadow-blue-500/30 hover:shadow-3xl hover:-translate-y-1"
+              >
+                Access Your Portal →
+              </button>
         </div>
       </section>
 
@@ -286,8 +286,8 @@ export default function Landing() {
                 </div>
               </div>
               <p className="text-sm text-gray-400 max-w-md">
-                Enterprise HR management system designed to streamline your workforce operations 
-                and empower your employees.
+                Kechita Capital's internal HR management system - streamlining operations 
+                and empowering our team members with self-service capabilities.
               </p>
             </div>
             <div>
@@ -300,21 +300,21 @@ export default function Landing() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Contact</h4>
+              <h4 className="text-white font-semibold mb-4">Contact HR</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
                   <span className="mr-2">📧</span>
-                  <a href="mailto:support@kechita.com" className="hover:text-white transition-colors">
-                    support@kechita.com
+                  <a href="mailto:hr@kechitacapital.com" className="hover:text-white transition-colors">
+                    hr@kechitacapital.com
                   </a>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">📞</span>
-                  <span>+254 XXX XXX XXX</span>
+                  <span>+254 709 123 456</span>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">📍</span>
-                  <span>Nairobi, Kenya</span>
+                  <span>Westlands, Nairobi</span>
                 </li>
               </ul>
             </div>
