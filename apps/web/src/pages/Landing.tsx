@@ -82,18 +82,18 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section - Compact & Colorful */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500">
+      {/* Hero Section - Compact & Colorful with Kechita Brand Colors */}
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #018ede 0%, #84b02c 50%, #99cc33 100%)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
           <div className="text-center relative z-10">
             <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/30">
-              <span className="animate-pulse mr-2">●</span>
+              <span className="animate-pulse mr-2 text-[#ed1c24]">●</span>
               Enterprise HR Management System
             </div>
             
             <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight">
               Your Complete
-              <span className="block text-yellow-300">
+              <span className="block" style={{ color: '#99cc33' }}>
                 HR Portal
               </span>
             </h1>
@@ -106,7 +106,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <button
                 onClick={() => navigate('/login')}
-                className="px-8 py-4 bg-white text-purple-600 text-lg font-semibold rounded-xl hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-1"
+                className="px-8 py-4 bg-white hover:bg-[#99cc33] text-[#018ede] hover:text-white text-lg font-semibold rounded-xl transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-1"
               >
                 Access Portal →
               </button>
@@ -118,33 +118,33 @@ export default function Landing() {
               </button>
             </div>
 
-            {/* Stats - Colorful Cards */}
+            {/* Stats - Colorful Cards with Brand Colors */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold text-yellow-300 mb-1">140+</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: '#99cc33' }}>140+</div>
                 <div className="text-sm text-blue-100">API Endpoints</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold text-green-300 mb-1">10</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: '#84b02c' }}>10</div>
                 <div className="text-sm text-blue-100">HR Modules</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold text-pink-300 mb-1">24/7</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: '#99cc33' }}>24/7</div>
                 <div className="text-sm text-blue-100">Availability</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold text-orange-300 mb-1">100%</div>
+                <div className="text-3xl font-bold text-white mb-1">100%</div>
                 <div className="text-sm text-blue-100">Secure</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Animated Background Elements */}
+        {/* Animated Background Elements with Brand Colors */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-yellow-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-          <div className="absolute top-20 right-10 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
-          <div className="absolute bottom-10 left-1/2 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500"></div>
+          <div className="absolute top-10 left-10 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#99cc33' }}></div>
+          <div className="absolute top-20 right-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000" style={{ backgroundColor: '#84b02c' }}></div>
+          <div className="absolute bottom-10 left-1/2 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500" style={{ backgroundColor: '#018ede' }}></div>
         </div>
       </section>
 
