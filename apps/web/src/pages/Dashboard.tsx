@@ -503,126 +503,90 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              {user?.role === 'hr_manager' ? 'HR Quick Actions' : 'Quick Actions'}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {/* HR Manager Specific Actions */}
-              {user?.role === 'hr_manager' && (
-                <>
-                  <Link to="/post-job" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">➕</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Post Job</p>
-                  </Link>
+          {/* Quick Actions - HR Manager ONLY */}
+          {user?.role === 'hr_manager' && (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">HR Quick Actions</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <Link to="/post-job" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">➕</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Post Job</p>
+                </Link>
 
-                  <Link to="/applications" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">📋</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Applications</p>
-                  </Link>
+                <Link to="/applications" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">📋</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Applications</p>
+                </Link>
 
-                  <Link to="/interview" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">🎤</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Interviews</p>
-                  </Link>
+                <Link to="/interview" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">🎤</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Interviews</p>
+                </Link>
 
-                  <Link to="/leave" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">✅</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Approve Leave</p>
-                  </Link>
+                <Link to="/offer" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">📝</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Offers</p>
+                </Link>
 
-                  <Link to="/announcements" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">📢</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Announcements</p>
-                  </Link>
-                </>
-              )}
+                <Link to="/leave" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">✅</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Leave Approvals</p>
+                </Link>
 
-              {/* Standard User Actions */}
-              {user?.role !== 'hr_manager' && (
-                <>
-              <Link to="/jobs" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">💼</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Browse Jobs</p>
-              </Link>
-
-              <Link to="/leave/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">📅</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Request Leave</p>
-              </Link>
-
-              <Link to="/claims/submit" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">💰</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Submit Claim</p>
-              </Link>
-
-              <Link to="/loans/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">🏦</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Apply Loan</p>
-              </Link>
-
-                  <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">📄</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm">Documents</p>
-                  </Link>
-                </>
-              )}
+                <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                  <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">📄</span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">Documents</p>
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Recent Activity Grid */}
+          {/* Recent Activity Grid - HR Manager ONLY */}
+          {user?.role === 'hr_manager' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Pending Leave Approvals</h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">📅</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{stats.pendingLeaves} pending leave requests</p>
+                    <p className="text-xs text-gray-500 mt-1">Review and approve employee leave applications</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Recruitment Pipeline</h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">📄</span>
+                    <span className="text-lg">📋</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">No recent applications</p>
-                    <p className="text-xs text-gray-500 mt-1">You haven't submitted any applications recently</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Latest Announcements</h2>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">📢</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">No new announcements</p>
-                    <p className="text-xs text-gray-500 mt-1">Check back later for updates</p>
+                    <p className="text-sm font-medium text-gray-900">{stats.totalApplications || 0} applications • {stats.pendingInterviews || 0} interviews</p>
+                    <p className="text-xs text-gray-500 mt-1">Active recruitment activities requiring your attention</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          )}
         </main>
       </div>
     </div>
