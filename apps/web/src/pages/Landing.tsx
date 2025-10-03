@@ -194,45 +194,45 @@ export default function Landing() {
               <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">⚡</span>
+                    <span className="text-2xl">⏱️</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
+                    <h3 className="text-xl font-semibold mb-2">Save Time</h3>
                     <p className="text-blue-100">
-                      Built with modern technologies for blazing-fast performance and smooth user experience.
+                      Submit leave requests, loan applications, and expense claims in minutes. No more paperwork or waiting in queues.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">🔐</span>
+                    <span className="text-2xl">👁️</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Enterprise Security</h3>
+                    <h3 className="text-xl font-semibold mb-2">Full Transparency</h3>
                     <p className="text-blue-100">
-                      Role-based access control, JWT authentication, and comprehensive audit trails.
+                      Track your application status in real-time. Know exactly where your requests stand and when to expect approvals.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">📱</span>
+                    <span className="text-2xl">💼</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Mobile First</h3>
+                    <h3 className="text-xl font-semibold mb-2">Self-Service Convenience</h3>
                     <p className="text-blue-100">
-                      Access on any device with our responsive web app and native mobile applications.
+                      Access your documents, payslips, and performance reviews anytime, anywhere. Full control at your fingertips.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-2xl">🎯</span>
+                    <span className="text-2xl">🤝</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Automated Workflows</h3>
+                    <h3 className="text-xl font-semibold mb-2">Better Communication</h3>
                     <p className="text-blue-100">
-                      Reduce manual work with intelligent automation and real-time notifications.
+                      Stay connected with instant notifications, company announcements, and direct messaging. Never miss important updates.
                     </p>
                   </div>
                 </div>
@@ -305,21 +305,21 @@ export default function Landing() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Contact HR</h4>
+              <h4 className="text-white font-semibold mb-4">Contact Us</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
                   <span className="mr-2">📧</span>
-                  <a href="mailto:hr@kechitacapital.com" className="hover:text-white transition-colors">
-                    hr@kechitacapital.com
+                  <a href="mailto:info@kechitacapital.co.ke" className="hover:text-white transition-colors">
+                    info@kechitacapital.co.ke
                   </a>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">📞</span>
-                  <span>+254 709 123 456</span>
+                  <span>+254 797 553 815</span>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">📍</span>
-                  <span>Westlands, Nairobi</span>
+                  <span>196 Machakos-Kitui Road, Machakos</span>
                 </li>
               </ul>
             </div>
