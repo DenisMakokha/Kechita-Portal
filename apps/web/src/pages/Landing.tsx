@@ -22,8 +22,8 @@ export default function Landing() {
     },
     {
       icon: '🏦',
-      title: 'Salary Advance',
-      description: 'Apply for salary advance by the 14th of each month. Applications processed on the 15th with automated eligibility checks.'
+      title: 'Loans & Advances',
+      description: 'Apply for salary advance (14th/15th payment - submit by 14th) or staff loans (general - 3 month repayment). Automated eligibility checks and tracking.'
     },
     {
       icon: '📊',

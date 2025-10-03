@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export default function LoanApplication() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    loanCategory: 'SALARY_ADVANCE',
     type: '14TH_PAYMENT',
     amount: '',
     reason: '',
@@ -14,8 +15,11 @@ export default function LoanApplication() {
 
   const interestRate = 0.12; // 12% annual interest
 
-  // Check if today is before or on the 14th
+  // Check if today is before or on the 14th (only for salary advance)
   const isBeforeDeadline = () => {
+    if (formData.loanCategory !== 'SALARY_ADVANCE') {
+      return true; // Staff loans have no deadline restriction
+    }
     const today = new Date();
     const dayOfMonth = today.getDate();
     return dayOfMonth <= 14;
@@ -111,10 +115,16 @@ export default function LoanApplication() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Apply for Salary Advance</h1>
-          <p className="text-gray-600">Submit by the 14th of each month • Processed on the 15th</p>
+          <h1 className="text-3xl font-bold mb-2">
+            {formData.loanCategory === 'SALARY_ADVANCE' ? 'Apply for Salary Advance' : 'Apply for Staff Loan'}
+          </h1>
+          <p className="text-gray-600">
+            {formData.loanCategory === 'SALARY_ADVANCE' 
+              ? 'Submit by the 14th of each month • Processed on the 15th'
+              : 'General staff loan • 3-month repayment period'}
+          </p>
           
-          {!isBeforeDeadline() && (
+          {formData.loanCategory === 'SALARY_ADVANCE' && !isBeforeDeadline() && (
             <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-start">
                 <span className="text-red-600 text-xl mr-3">⚠️</span>
@@ -135,9 +145,34 @@ export default function LoanApplication() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow p-6">
               <form onSubmit={handleSubmit}>
-                {/* Advance Type */}
+                {/* Loan Category */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Advance Type *</label>
+                  <label className="block text-sm font-medium mb-2">Loan Category *</label>
+                  <select
+                    required
+                    value={formData.loanCategory}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      loanCategory: e.target.value,
+                      type: e.target.value === 'SALARY_ADVANCE' ? '14TH_PAYMENT' : 'STAFF_LOAN',
+                      repaymentMonths: e.target.value === 'SALARY_ADVANCE' ? '12' : '3'
+                    })}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="SALARY_ADVANCE">Salary Advance (14th/15th Payment)</option>
+                    <option value="STAFF_LOAN">Staff Loan (General)</option>
+                  </select>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {formData.loanCategory === 'SALARY_ADVANCE' ? 
+                      'Extra month salary - submit by 14th, processed on 15th' : 
+                      'General staff loan - 3 month repayment period'}
+                  </p>
+                </div>
+
+                {/* Loan Type (only for Salary Advance) */}
+                {formData.loanCategory === 'SALARY_ADVANCE' && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Payment Type *</label>
                   <select
                     required
                     value={formData.type}
@@ -145,19 +180,22 @@ export default function LoanApplication() {
                     className="w-full border rounded px-3 py-2"
                     disabled={!isBeforeDeadline()}
                   >
-                    <option value="14TH_PAYMENT">14th Payment Advance</option>
-                    <option value="15TH_PAYMENT">15th Payment Advance</option>
-                  </select>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {formData.type === '14TH_PAYMENT' ? 
-                      'Extra month salary paid in December' : 
-                      'Extra month salary paid in June'}
-                  </p>
-                </div>
+                      <option value="14TH_PAYMENT">14th Payment (December)</option>
+                      <option value="15TH_PAYMENT">15th Payment (June)</option>
+                    </select>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {formData.type === '14TH_PAYMENT' ? 
+                        'Extra month salary paid in December' : 
+                        'Extra month salary paid in June'}
+                    </p>
+                  </div>
+                )}
 
                 {/* Amount */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Advance Amount *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    {formData.loanCategory === 'SALARY_ADVANCE' ? 'Advance Amount *' : 'Loan Amount *'}
+                  </label>
                   <div className="relative">
                     <span className="absolute left-3 top-2 text-gray-500">$</span>
                     <input
@@ -178,18 +216,30 @@ export default function LoanApplication() {
                 {/* Repayment Period */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">Repayment Period *</label>
-                  <select
-                    required
-                    value={formData.repaymentMonths}
-                    onChange={(e) => setFormData({ ...formData, repaymentMonths: e.target.value })}
-                    className="w-full border rounded px-3 py-2"
-                    disabled={!isBeforeDeadline()}
-                  >
-                    <option value="6">6 months</option>
-                    <option value="12">12 months</option>
-                    <option value="18">18 months</option>
-                    <option value="24">24 months</option>
-                  </select>
+                  {formData.loanCategory === 'STAFF_LOAN' ? (
+                    <div>
+                      <input
+                        type="text"
+                        value="3 months (Fixed)"
+                        disabled
+                        className="w-full border rounded px-3 py-2 bg-gray-100"
+                      />
+                      <p className="text-sm text-gray-600 mt-1">Staff loans must be repaid within 3 months</p>
+                    </div>
+                  ) : (
+                    <select
+                      required
+                      value={formData.repaymentMonths}
+                      onChange={(e) => setFormData({ ...formData, repaymentMonths: e.target.value })}
+                      className="w-full border rounded px-3 py-2"
+                      disabled={!isBeforeDeadline()}
+                    >
+                      <option value="6">6 months</option>
+                      <option value="12">12 months</option>
+                      <option value="18">18 months</option>
+                      <option value="24">24 months</option>
+                    </select>
+                  )}
                 </div>
 
                 {/* Calculate Button */}
@@ -200,7 +250,7 @@ export default function LoanApplication() {
                     disabled={calculating || !formData.amount || !isBeforeDeadline()}
                     className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
                   >
-                    {calculating ? 'Calculating...' : '🧮 Calculate Advance'}
+                    {calculating ? 'Calculating...' : `🧮 Calculate ${formData.loanCategory === 'SALARY_ADVANCE' ? 'Advance' : 'Loan'}`}
                   </button>
                 </div>
 
@@ -213,7 +263,7 @@ export default function LoanApplication() {
                     onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                     className="w-full border rounded px-3 py-2"
                     rows={4}
-                    placeholder="Explain the reason for the salary advance request..."
+                    placeholder={`Explain the reason for the ${formData.loanCategory === 'SALARY_ADVANCE' ? 'salary advance' : 'loan'} request...`}
                     disabled={!isBeforeDeadline()}
                   />
                 </div>
