@@ -200,7 +200,7 @@ export default function Landing() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+      <section className="py-20 bg-gradient-to-br from-[#018ede] to-[#1674f9] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -209,45 +209,53 @@ export default function Landing() {
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#99cc33] to-[#84b02c] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-2xl">⏱️</span>
+                  <div className="flex-shrink-0 w-16 h-16 bg-[#99cc33] rounded-2xl flex items-center justify-center mr-4 shadow-xl">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Save Time</h3>
-                    <p className="text-blue-100">
+                    <p className="text-white/90">
                       Submit leave requests, loan applications, and expense claims in minutes. No more paperwork or waiting in queues.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#018ede] to-[#018ede]/80 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-2xl">👁️</span>
+                  <div className="flex-shrink-0 w-16 h-16 bg-[#99cc33] rounded-2xl flex items-center justify-center mr-4 shadow-xl">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Full Transparency</h3>
-                    <p className="text-blue-100">
+                    <p className="text-white/90">
                       Track your application status in real-time. Know exactly where your requests stand and when to expect approvals.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#99cc33] to-[#99cc33]/80 rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-2xl">💼</span>
+                  <div className="flex-shrink-0 w-16 h-16 bg-[#99cc33] rounded-2xl flex items-center justify-center mr-4 shadow-xl">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Self-Service Convenience</h3>
-                    <p className="text-blue-100">
+                    <p className="text-white/90">
                       Access your documents, payslips, and performance reviews anytime, anywhere. Full control at your fingertips.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-[#84b02c] to-[#6f9426] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                    <span className="text-2xl">🤝</span>
+                  <div className="flex-shrink-0 w-16 h-16 bg-[#99cc33] rounded-2xl flex items-center justify-center mr-4 shadow-xl">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Better Communication</h3>
-                    <p className="text-blue-100">
+                    <p className="text-white/90">
                       Stay connected with instant notifications, company announcements, and direct messaging. Never miss important updates.
                     </p>
                   </div>
