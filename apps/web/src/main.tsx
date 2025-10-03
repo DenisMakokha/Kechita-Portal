@@ -33,6 +33,7 @@ import LoansHistory from './pages/LoansHistory';
 import DocumentUpload from './pages/DocumentUpload';
 import Announcements from './pages/Announcements';
 import Profile from './pages/Profile';
+import Performance from './pages/Performance';
 
 // Protected component
 import Protected from './components/Protected';
@@ -77,6 +78,9 @@ function App() {
         {/* Documents & Communication */}
         <Route path="/documents" element={<Protected><DocumentUpload /></Protected>} />
         <Route path="/announcements" element={<Protected><Announcements /></Protected>} />
+        
+        {/* Performance */}
+        <Route path="/performance" element={<Protected><Performance /></Protected>} />
         
         {/* Default redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
