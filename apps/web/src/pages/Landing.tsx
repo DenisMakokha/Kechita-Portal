@@ -165,20 +165,36 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100"
-              >
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+            {features.map((feature, index) => {
+              // Define brand color for each feature
+              const colors = [
+                'from-[#018ede] to-[#018ede]/80', // Blue - Recruitment
+                'from-[#99cc33] to-[#84b02c]',     // Green - Leave
+                'from-[#ed1c24] to-[#ed1c24]/80', // Red - Claims
+                'from-[#018ede] to-[#99cc33]',     // Blue-Green gradient - Loans
+                'from-[#84b02c] to-[#6f9426]',     // Dark Green - Performance
+                'from-[#99cc33] to-[#99cc33]/80', // Bright Green - Documents
+                'from-[#018ede] to-[#84b02c]',     // Blue-Green - Mobile
+                'from-[#6f9426] to-[#84b02c]'      // Dark greens - Security
+              ];
+              
+              return (
+                <div
+                  key={index}
+                  className="p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100 group"
+                >
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${colors[index]} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <span className="text-3xl">{feature.icon}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
