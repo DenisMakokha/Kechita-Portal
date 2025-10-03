@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './styles.css';
 
-// Auth pages
+// Public pages
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 
 // Admin pages
@@ -41,6 +42,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         
         {/* Admin routes */}
@@ -77,8 +79,7 @@ function App() {
         <Route path="/announcements" element={<Protected><Announcements /></Protected>} />
         
         {/* Default redirect */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
