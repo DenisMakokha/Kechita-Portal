@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 export default function LoanApplication() {
   const navigate = useNavigate();
@@ -112,8 +113,8 @@ export default function LoanApplication() {
   const principal = Number(formData.amount);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">
             {formData.loanCategory === 'SALARY_ADVANCE' ? 'Apply for Salary Advance' : 'Apply for Staff Loan'}
@@ -363,6 +364,6 @@ export default function LoanApplication() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

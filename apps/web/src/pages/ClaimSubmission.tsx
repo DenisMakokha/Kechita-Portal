@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 interface ClaimType {
   id: string;
@@ -93,8 +94,8 @@ export default function ClaimSubmission() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-3xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Submit Claim</h1>
           <p className="text-gray-600">Submit an expense claim for reimbursement</p>
@@ -260,6 +261,6 @@ export default function ClaimSubmission() {
           </ul>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

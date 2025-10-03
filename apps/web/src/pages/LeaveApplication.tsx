@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 interface LeaveType {
   id: string;
@@ -95,8 +96,8 @@ export default function LeaveApplication() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-3xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Apply for Leave</h1>
           <p className="text-gray-600">Submit a leave application request</p>
@@ -233,6 +234,6 @@ export default function LeaveApplication() {
           </form>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
