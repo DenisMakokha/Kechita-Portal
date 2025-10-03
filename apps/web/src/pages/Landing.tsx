@@ -82,68 +82,69 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-          <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-8">
+      {/* Hero Section - Compact & Colorful */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+          <div className="text-center relative z-10">
+            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/30">
               <span className="animate-pulse mr-2">●</span>
               Enterprise HR Management System
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              Streamline Your
-              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                HR Operations
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight">
+              Your Complete
+              <span className="block text-yellow-300">
+                HR Portal
               </span>
             </h1>
             
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+            <p className="text-lg text-blue-50 max-w-2xl mx-auto mb-8 leading-relaxed">
               Welcome to Kechita Capital's comprehensive staff portal. Access all your HR needs in one place - 
               from leave applications to performance tracking, everything you need is right here.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <button
                 onClick={() => navigate('/login')}
-                className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1"
+                className="px-8 py-4 bg-white text-purple-600 text-lg font-semibold rounded-xl hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:shadow-3xl hover:-translate-y-1"
               >
                 Access Portal →
               </button>
               <button
                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-white text-gray-700 text-lg font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-lg border-2 border-gray-200"
+                className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white text-lg font-semibold rounded-xl hover:bg-white/20 transition-all border-2 border-white/30"
               >
                 Learn More
               </button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mt-20">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-blue-600 mb-2">140+</div>
-                <div className="text-sm text-gray-600">API Endpoints</div>
+            {/* Stats - Colorful Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
+                <div className="text-3xl font-bold text-yellow-300 mb-1">140+</div>
+                <div className="text-sm text-blue-100">API Endpoints</div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-purple-600 mb-2">10</div>
-                <div className="text-sm text-gray-600">HR Modules</div>
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
+                <div className="text-3xl font-bold text-green-300 mb-1">10</div>
+                <div className="text-sm text-blue-100">HR Modules</div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-green-600 mb-2">24/7</div>
-                <div className="text-sm text-gray-600">Availability</div>
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
+                <div className="text-3xl font-bold text-pink-300 mb-1">24/7</div>
+                <div className="text-sm text-blue-100">Availability</div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-orange-600 mb-2">100%</div>
-                <div className="text-sm text-gray-600">Secure</div>
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
+                <div className="text-3xl font-bold text-orange-300 mb-1">100%</div>
+                <div className="text-sm text-blue-100">Secure</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
+        {/* Animated Background Elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-yellow-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute top-20 right-10 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
+          <div className="absolute bottom-10 left-1/2 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500"></div>
         </div>
       </section>
 
