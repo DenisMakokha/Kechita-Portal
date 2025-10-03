@@ -14,6 +14,13 @@ export default function LoanApplication() {
 
   const interestRate = 0.12; // 12% annual interest
 
+  // Check if today is before or on the 14th
+  const isBeforeDeadline = () => {
+    const today = new Date();
+    const dayOfMonth = today.getDate();
+    return dayOfMonth <= 14;
+  };
+
   const calculateLoan = () => {
     const principal = Number(formData.amount);
     const months = Number(formData.repaymentMonths);
@@ -59,8 +66,14 @@ export default function LoanApplication() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check deadline
+    if (!isBeforeDeadline()) {
+      alert('Salary advance applications must be submitted by the 14th of each month. Applications are processed on the 15th. Please submit next month.');
+      return;
+    }
+    
     if (!amortization) {
-      alert('Please calculate the loan first');
+      alert('Please calculate the advance first');
       return;
     }
 
@@ -80,15 +93,15 @@ export default function LoanApplication() {
       });
 
       if (response.ok) {
-        alert('Loan application submitted successfully!');
+        alert('Salary advance application submitted successfully! Your application will be processed on the 15th of this month.');
         navigate('/loans');
       } else {
         const error = await response.json();
-        alert(`Error: ${error.message || 'Failed to submit loan application'}`);
+        alert(`Error: ${error.message || 'Failed to submit application'}`);
       }
     } catch (error) {
-      console.error('Failed to submit loan application:', error);
-      alert('Failed to submit loan application');
+      console.error('Failed to submit salary advance application:', error);
+      alert('Failed to submit salary advance application');
     }
   };
 
@@ -98,8 +111,23 @@ export default function LoanApplication() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Apply for Staff Loan</h1>
-          <p className="text-gray-600">Submit a loan application (14th/15th Payment)</p>
+          <h1 className="text-3xl font-bold mb-2">Apply for Salary Advance</h1>
+          <p className="text-gray-600">Submit by the 14th of each month • Processed on the 15th</p>
+          
+          {!isBeforeDeadline() && (
+            <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-start">
+                <span className="text-red-600 text-xl mr-3">⚠️</span>
+                <div>
+                  <p className="text-red-800 font-semibold">Application Deadline Passed</p>
+                  <p className="text-red-700 text-sm mt-1">
+                    Salary advance applications must be submitted by the 14th of each month.
+                    Applications are processed on the 15th. Please submit your application next month.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -107,14 +135,15 @@ export default function LoanApplication() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow p-6">
               <form onSubmit={handleSubmit}>
-                {/* Loan Type */}
+                {/* Advance Type */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Loan Type *</label>
+                  <label className="block text-sm font-medium mb-2">Advance Type *</label>
                   <select
                     required
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                     className="w-full border rounded px-3 py-2"
+                    disabled={!isBeforeDeadline()}
                   >
                     <option value="14TH_PAYMENT">14th Payment Advance</option>
                     <option value="15TH_PAYMENT">15th Payment Advance</option>
@@ -128,7 +157,7 @@ export default function LoanApplication() {
 
                 {/* Amount */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Loan Amount *</label>
+                  <label className="block text-sm font-medium mb-2">Advance Amount *</label>
                   <div className="relative">
                     <span className="absolute left-3 top-2 text-gray-500">$</span>
                     <input
@@ -140,6 +169,7 @@ export default function LoanApplication() {
                       onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                       className="w-full border rounded px-3 py-2 pl-8"
                       placeholder="0.00"
+                      disabled={!isBeforeDeadline()}
                     />
                   </div>
                   <p className="text-sm text-gray-500 mt-1">Minimum: $100</p>
@@ -153,6 +183,7 @@ export default function LoanApplication() {
                     value={formData.repaymentMonths}
                     onChange={(e) => setFormData({ ...formData, repaymentMonths: e.target.value })}
                     className="w-full border rounded px-3 py-2"
+                    disabled={!isBeforeDeadline()}
                   >
                     <option value="6">6 months</option>
                     <option value="12">12 months</option>
@@ -166,10 +197,10 @@ export default function LoanApplication() {
                   <button
                     type="button"
                     onClick={calculateLoan}
-                    disabled={calculating || !formData.amount}
+                    disabled={calculating || !formData.amount || !isBeforeDeadline()}
                     className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
                   >
-                    {calculating ? 'Calculating...' : '🧮 Calculate Loan'}
+                    {calculating ? 'Calculating...' : '🧮 Calculate Advance'}
                   </button>
                 </div>
 
@@ -182,7 +213,8 @@ export default function LoanApplication() {
                     onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                     className="w-full border rounded px-3 py-2"
                     rows={4}
-                    placeholder="Explain the reason for the loan request..."
+                    placeholder="Explain the reason for the salary advance request..."
+                    disabled={!isBeforeDeadline()}
                   />
                 </div>
 
@@ -197,7 +229,7 @@ export default function LoanApplication() {
                   </button>
                   <button
                     type="submit"
-                    disabled={!amortization}
+                    disabled={!amortization || !isBeforeDeadline()}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
                   >
                     Submit Application
@@ -209,10 +241,10 @@ export default function LoanApplication() {
 
           {/* Summary Column */}
           <div className="lg:col-span-1">
-            {/* Loan Summary */}
+            {/* Advance Summary */}
             {amortization ? (
               <div className="bg-white rounded-lg shadow p-6 sticky top-4">
-                <h3 className="font-bold text-lg mb-4">Loan Summary</h3>
+                <h3 className="font-bold text-lg mb-4">Advance Summary</h3>
                 
                 <div className="space-y-3 text-sm mb-4">
                   <div className="flex justify-between">
@@ -262,19 +294,20 @@ export default function LoanApplication() {
               <div className="bg-gray-50 rounded-lg p-6 text-center">
                 <div className="text-4xl mb-2">📊</div>
                 <p className="text-sm text-gray-600">
-                  Enter loan amount and click "Calculate Loan" to see summary
+                  Enter advance amount and click "Calculate Advance" to see summary
                 </p>
               </div>
             )}
 
             {/* Info Box */}
-            <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-900 text-sm mb-2">ℹ️ Important</h4>
-              <ul className="text-xs text-yellow-800 space-y-1">
-                <li>• Interest rate: {(interestRate * 100)}% per annum</li>
-                <li>• Deducted from monthly salary</li>
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-900 text-sm mb-2">📅 Application Schedule</h4>
+              <ul className="text-xs text-blue-800 space-y-1">
+                <li>• <strong>Deadline:</strong> Submit by 14th of month</li>
+                <li>• <strong>Processing:</strong> Applications processed on 15th</li>
+                <li>• <strong>Interest:</strong> {(interestRate * 100)}% per annum</li>
+                <li>• <strong>Deduction:</strong> From monthly salary</li>
                 <li>• Requires manager approval</li>
-                <li>• Subject to eligibility criteria</li>
               </ul>
             </div>
           </div>

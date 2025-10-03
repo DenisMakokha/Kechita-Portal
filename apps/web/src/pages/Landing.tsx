@@ -22,8 +22,8 @@ export default function Landing() {
     },
     {
       icon: '🏦',
-      title: 'Staff Loans',
-      description: 'Apply for 14th and 15th salary loans with automated eligibility checks and repayment tracking.'
+      title: 'Salary Advance',
+      description: 'Apply for salary advance by the 14th of each month. Applications processed on the 15th with automated eligibility checks.'
     },
     {
       icon: '📊',
