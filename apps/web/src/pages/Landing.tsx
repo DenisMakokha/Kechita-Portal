@@ -55,7 +55,7 @@ export default function Landing() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <img 
-                src="/src/assets/KechitaLogo.svg" 
+                src="/src/assets/LogoHeader.svg" 
                 alt="Kechita Capital" 
                 className="h-10 w-10"
               />
@@ -276,9 +276,9 @@ export default function Landing() {
             <div className="col-span-2">
               <div className="flex items-center space-x-3 mb-4">
                 <img 
-                  src="/src/assets/KechitaLogo.svg" 
+                  src="/src/assets/LogoHeader.svg" 
                   alt="Kechita Capital" 
-                  className="h-8 w-8 brightness-0 invert"
+                  className="h-8 w-8"
                 />
                 <div>
                   <h3 className="text-lg font-bold text-white">Kechita Capital</h3>
