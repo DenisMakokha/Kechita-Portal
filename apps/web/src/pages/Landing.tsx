@@ -84,21 +84,24 @@ export default function Landing() {
 
       {/* Hero Section - Compact & Colorful with Kechita Brand Colors */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #018ede 0%, #84b02c 50%, #99cc33 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-          <div className="text-center relative z-10">
-            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/30">
+        {/* Dark overlay for better contrast */}
+        <div className="absolute inset-0 bg-black/30 z-0"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 relative z-10">
+          <div className="text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-black/40 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/40">
               <span className="animate-pulse mr-2 text-[#ed1c24]">●</span>
               Enterprise HR Management System
             </div>
             
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight drop-shadow-lg">
               Your Complete
-              <span className="block" style={{ color: '#99cc33' }}>
+              <span className="block text-white bg-[#99cc33] px-8 py-2 rounded-xl inline-block mt-2 shadow-2xl">
                 HR Portal
               </span>
             </h1>
             
-            <p className="text-lg text-blue-50 max-w-2xl mx-auto mb-8 leading-relaxed">
+            <p className="text-lg text-white max-w-2xl mx-auto mb-8 leading-relaxed drop-shadow-md">
               Welcome to Kechita Capital's comprehensive staff portal. Access all your HR needs in one place - 
               from leave applications to performance tracking, everything you need is right here.
             </p>
@@ -118,23 +121,23 @@ export default function Landing() {
               </button>
             </div>
 
-            {/* Stats - Colorful Cards with Brand Colors */}
+            {/* Stats - Colorful Cards with Brand Colors and Better Contrast */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold mb-1" style={{ color: '#99cc33' }}>140+</div>
-                <div className="text-sm text-blue-100">API Endpoints</div>
+              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">140+</div>
+                <div className="text-sm text-white/90">API Endpoints</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold mb-1" style={{ color: '#84b02c' }}>10</div>
-                <div className="text-sm text-blue-100">HR Modules</div>
+              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">10</div>
+                <div className="text-sm text-white/90">HR Modules</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold mb-1" style={{ color: '#99cc33' }}>24/7</div>
-                <div className="text-sm text-blue-100">Availability</div>
+              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">24/7</div>
+                <div className="text-sm text-white/90">Availability</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/20 transition-all">
-                <div className="text-3xl font-bold text-white mb-1">100%</div>
-                <div className="text-sm text-blue-100">Secure</div>
+              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
+                <div className="text-3xl font-bold text-white mb-1 drop-shadow-lg">100%</div>
+                <div className="text-sm text-white/90">Secure</div>
               </div>
             </div>
           </div>
