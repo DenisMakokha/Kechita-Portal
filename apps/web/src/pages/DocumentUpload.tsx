@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 
 interface Document {
   id: string;
@@ -103,8 +104,8 @@ export default function DocumentUpload() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">My Documents</h1>
           <p className="text-gray-600">Upload and manage your documents</p>
@@ -283,6 +284,6 @@ export default function DocumentUpload() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
