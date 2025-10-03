@@ -387,7 +387,7 @@ export default function Offer() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-medium text-gray-900">
-                          {offer.currency} {offer.salary.toLocaleString()}
+                          {offer.currency === 'KES' ? 'KES' : offer.currency} {offer.salary.toLocaleString()}
                         </p>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
@@ -518,10 +518,10 @@ export default function Offer() {
                         onChange={(e) => setForm({ ...form, currency: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="KES">KES</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
+                        <option value="KES">Kenyan Shillings (KES)</option>
+                        <option value="USD">US Dollars (USD)</option>
+                        <option value="EUR">Euros (EUR)</option>
+                        <option value="GBP">British Pounds (GBP)</option>
                       </select>
                     </div>
                   </div>
@@ -632,7 +632,7 @@ export default function Offer() {
                   <div>
                     <p className="text-sm text-gray-600">Compensation</p>
                     <p className="text-lg font-medium">
-                      {selectedOffer.currency} {selectedOffer.salary.toLocaleString()}
+                      {selectedOffer.currency === 'KES' ? 'Kenyan Shillings' : selectedOffer.currency} {selectedOffer.salary.toLocaleString()}
                     </p>
                   </div>
 
