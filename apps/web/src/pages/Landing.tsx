@@ -84,19 +84,19 @@ export default function Landing() {
 
       {/* Hero Section - Compact & Colorful with Kechita Brand Colors */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #018ede 0%, #84b02c 50%, #99cc33 100%)' }}>
-        {/* Dark overlay for better contrast */}
-        <div className="absolute inset-0 bg-black/30 z-0"></div>
+        {/* Lighter overlay for brightness while keeping contrast */}
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 relative z-10">
           <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 bg-black/40 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/40">
-              <span className="animate-pulse mr-2 text-[#ed1c24]">●</span>
+            <div className="inline-flex items-center px-4 py-2 bg-white/25 backdrop-blur-md text-white rounded-full text-sm font-medium mb-6 border border-white/50 shadow-lg">
+              <span className="animate-pulse mr-2 text-[#ed1c24] drop-shadow-lg">●</span>
               Enterprise HR Management System
             </div>
             
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight drop-shadow-lg">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-5 leading-tight drop-shadow-2xl">
               Your Complete
-              <span className="block text-white bg-[#99cc33] px-8 py-2 rounded-xl inline-block mt-2 shadow-2xl">
+              <span className="block text-white bg-[#99cc33] px-8 py-2 rounded-xl inline-block mt-2 shadow-2xl animate-pulse" style={{ animationDuration: '3s' }}>
                 HR Portal
               </span>
             </h1>
@@ -121,33 +121,34 @@ export default function Landing() {
               </button>
             </div>
 
-            {/* Stats - Colorful Cards with Brand Colors and Better Contrast */}
+            {/* Stats - Brighter Cards with Glow Effects */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
-                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">140+</div>
-                <div className="text-sm text-white/90">API Endpoints</div>
+              <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/40 hover:bg-white/25 hover:shadow-xl hover:shadow-white/20 transition-all hover:-translate-y-1">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-2xl">140+</div>
+                <div className="text-sm text-white/95 font-medium">API Endpoints</div>
               </div>
-              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
-                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">10</div>
-                <div className="text-sm text-white/90">HR Modules</div>
+              <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/40 hover:bg-white/25 hover:shadow-xl hover:shadow-white/20 transition-all hover:-translate-y-1">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-2xl">10</div>
+                <div className="text-sm text-white/95 font-medium">HR Modules</div>
               </div>
-              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
-                <div className="text-3xl font-bold mb-1 text-white drop-shadow-lg">24/7</div>
-                <div className="text-sm text-white/90">Availability</div>
+              <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/40 hover:bg-white/25 hover:shadow-xl hover:shadow-white/20 transition-all hover:-translate-y-1">
+                <div className="text-3xl font-bold mb-1 text-white drop-shadow-2xl">24/7</div>
+                <div className="text-sm text-white/95 font-medium">Availability</div>
               </div>
-              <div className="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/30 hover:bg-black/40 transition-all">
-                <div className="text-3xl font-bold text-white mb-1 drop-shadow-lg">100%</div>
-                <div className="text-sm text-white/90">Secure</div>
+              <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/40 hover:bg-white/25 hover:shadow-xl hover:shadow-white/20 transition-all hover:-translate-y-1">
+                <div className="text-3xl font-bold text-white mb-1 drop-shadow-2xl">100%</div>
+                <div className="text-sm text-white/95 font-medium">Secure</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Animated Background Elements with Brand Colors */}
+        {/* Animated Background Elements with Brand Colors - Brighter */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-          <div className="absolute top-10 left-10 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ backgroundColor: '#99cc33' }}></div>
-          <div className="absolute top-20 right-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000" style={{ backgroundColor: '#84b02c' }}></div>
-          <div className="absolute bottom-10 left-1/2 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-500" style={{ backgroundColor: '#018ede' }}></div>
+          <div className="absolute top-10 left-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ backgroundColor: '#99cc33' }}></div>
+          <div className="absolute top-20 right-10 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000" style={{ backgroundColor: '#84b02c' }}></div>
+          <div className="absolute bottom-10 left-1/2 w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-pulse delay-500" style={{ backgroundColor: '#018ede' }}></div>
+          <div className="absolute top-1/2 left-1/4 w-64 h-64 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse delay-700" style={{ backgroundColor: '#ffffff' }}></div>
         </div>
       </section>
 
