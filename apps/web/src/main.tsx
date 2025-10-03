@@ -15,6 +15,7 @@ import RoleBuilder from './pages/admin/RoleBuilder';
 
 // Staff pages
 import Dashboard from './pages/Dashboard';
+import HRDashboard from './pages/HRDashboard';
 import Jobs from './pages/Jobs';
 import Applications from './pages/Applications';
 import Interview from './pages/Interview';
@@ -54,6 +55,7 @@ function App() {
         
         {/* Staff routes */}
         <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+        <Route path="/hr-dashboard" element={<Protected><HRDashboard /></Protected>} />
         <Route path="/profile" element={<Protected><Profile /></Protected>} />
         
         {/* Jobs & Recruitment */}
