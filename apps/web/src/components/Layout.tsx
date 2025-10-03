@@ -1,32 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, ReactNode } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../stores/auth';
 
-interface DashboardStats {
-  pendingLeaves: number;
-  pendingClaims: number;
-  activeLoans: number;
-  unreadAnnouncements: number;
+interface LayoutProps {
+  children: ReactNode;
 }
 
-export default function Dashboard() {
+export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
-  const [stats, setStats] = useState<DashboardStats>({
-    pendingLeaves: 0,
-    pendingClaims: 0,
-    activeLoans: 0,
-    unreadAnnouncements: 0
-  });
-  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -63,36 +51,6 @@ export default function Dashboard() {
     }
   }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-      // Fetch pending items
-      const [leaves, claims, loans, announcements] = await Promise.all([
-        fetch('http://localhost:4000/leave/applications?status=PENDING', { credentials: 'include' }),
-        fetch('http://localhost:4000/claims/claims?status=PENDING', { credentials: 'include' }),
-        fetch('http://localhost:4000/loans/loans?status=ACTIVE', { credentials: 'include' }),
-        fetch('http://localhost:4000/communication/announcements?unread=true', { credentials: 'include' })
-      ]);
-
-      const [leavesData, claimsData, loansData, announcementsData] = await Promise.all([
-        leaves.ok ? leaves.json() : [],
-        claims.ok ? claims.json() : [],
-        loans.ok ? loans.json() : [],
-        announcements.ok ? announcements.json() : []
-      ]);
-
-      setStats({
-        pendingLeaves: Array.isArray(leavesData) ? leavesData.length : 0,
-        pendingClaims: Array.isArray(claimsData) ? claimsData.length : 0,
-        activeLoans: Array.isArray(loansData) ? loansData.length : 0,
-        unreadAnnouncements: Array.isArray(announcementsData) ? announcementsData.length : 0
-      });
-    } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -100,14 +58,12 @@ export default function Dashboard() {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    // In a real app, save to localStorage and apply to document
   };
 
   const menuItems = [
     { 
       label: 'Dashboard', 
-      path: '/dashboard', 
-      active: true,
+      path: '/dashboard',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -188,16 +144,12 @@ export default function Dashboard() {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#018ede] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  // Get page title based on current route
+  const getPageTitle = () => {
+    const path = location.pathname;
+    const item = menuItems.find(i => path.startsWith(i.path));
+    return item?.label || 'Dashboard';
+  };
 
   return (
     <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'} flex`}>
@@ -225,7 +177,7 @@ export default function Dashboard() {
               key={index}
               to={item.path}
               className={`flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg transition-all ${
-                item.active
+                location.pathname.startsWith(item.path)
                   ? 'bg-gradient-to-r from-[#018ede] to-[#1674f9] text-white shadow-lg'
                   : darkMode 
                     ? 'text-gray-300 hover:bg-gray-700' 
@@ -261,7 +213,7 @@ export default function Dashboard() {
           <div className="h-full px-6 flex items-center justify-between">
             {/* Page Title */}
             <div>
-              <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Dashboard</h1>
+              <h1 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{getPageTitle()}</h1>
               <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Welcome back, {user?.firstName}!</p>
             </div>
 
@@ -276,7 +228,7 @@ export default function Dashboard() {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  {stats.unreadAnnouncements > 0 && (
+                  {unreadCount > 0 && (
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                   )}
                 </button>
@@ -286,22 +238,15 @@ export default function Dashboard() {
                   <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
                     <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[#018ede] to-[#1674f9]">
                       <h3 className="font-semibold text-white">Notifications</h3>
-                      <p className="text-xs text-white/80">{stats.unreadAnnouncements} unread</p>
+                      <p className="text-xs text-white/80">{unreadCount} unread</p>
                     </div>
                     <div className="max-h-96 overflow-y-auto">
-                      {stats.unreadAnnouncements > 0 ? (
-                        <div className="p-4 hover:bg-gray-50 cursor-pointer border-b">
-                          <p className="text-sm font-medium text-gray-900">New Announcements</p>
-                          <p className="text-xs text-gray-500 mt-1">You have {stats.unreadAnnouncements} unread announcements</p>
-                        </div>
-                      ) : (
-                        <div className="p-8 text-center text-gray-500">
-                          <svg className="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                          </svg>
-                          <p className="text-sm">No new notifications</p>
-                        </div>
-                      )}
+                      <div className="p-8 text-center text-gray-500">
+                        <svg className="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                        <p className="text-sm">No new notifications</p>
+                      </div>
                     </div>
                     <div className="p-3 border-t bg-gray-50">
                       <Link to="/announcements" className="text-sm text-[#018ede] hover:text-[#1674f9] font-medium">
@@ -400,132 +345,9 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <main className="p-6">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Link to="/leave" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-blue-500">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Pending Leaves</p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">{stats.pendingLeaves}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">📅</span>
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/claims" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-green-500">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Pending Claims</p>
-                  <p className="text-3xl font-bold text-green-600 mt-2">{stats.pendingClaims}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">💰</span>
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/loans" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-purple-500">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Active Loans</p>
-                  <p className="text-3xl font-bold text-purple-600 mt-2">{stats.activeLoans}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">🏦</span>
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/announcements" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-orange-500">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Announcements</p>
-                  <p className="text-3xl font-bold text-orange-600 mt-2">{stats.unreadAnnouncements}</p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">📢</span>
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <Link to="/jobs" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">💼</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Browse Jobs</p>
-              </Link>
-
-              <Link to="/leave/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">📅</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Request Leave</p>
-              </Link>
-
-              <Link to="/claims/submit" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">💰</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Submit Claim</p>
-              </Link>
-
-              <Link to="/loans/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">🏦</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Apply Loan</p>
-              </Link>
-
-              <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">📄</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Documents</p>
-              </Link>
-            </div>
-          </div>
-
-          {/* Recent Activity Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">📄</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">No recent applications</p>
-                    <p className="text-xs text-gray-500 mt-1">You haven't submitted any applications recently</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Latest Announcements</h2>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">📢</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">No new announcements</p>
-                    <p className="text-xs text-gray-500 mt-1">Check back later for updates</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {children}
         </main>
       </div>
     </div>
