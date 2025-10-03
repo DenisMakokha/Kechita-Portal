@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 
 interface Loan {
   id: string;
@@ -92,8 +93,8 @@ export default function LoansHistory() {
   const selectedLoanData = loans.find(l => l.id === selectedLoan);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Loans History</h1>
           <p className="text-gray-600">View all your loan applications and repayment schedules</p>
@@ -273,6 +274,6 @@ export default function LoansHistory() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

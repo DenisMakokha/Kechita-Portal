@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 
 interface Claim {
   id: string;
@@ -73,8 +74,8 @@ export default function ClaimsHistory() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Claims History</h1>
           <p className="text-gray-600">View all your expense claims</p>
@@ -239,6 +240,6 @@ export default function ClaimsHistory() {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
