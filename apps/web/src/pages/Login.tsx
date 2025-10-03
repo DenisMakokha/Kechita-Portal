@@ -71,9 +71,9 @@ export default function Login() {
               {/* Logo */}
               <div className="mb-8">
                 <img 
-                  src="/src/assets/KechitaLogo.svg" 
+                  src="/src/assets/LogoHeader.svg" 
                   alt="Kechita Capital Logo" 
-                  className="h-32 w-auto mx-auto drop-shadow-2xl"
+                  className="h-48 w-auto mx-auto drop-shadow-2xl"
                 />
               </div>
 
@@ -121,9 +121,9 @@ export default function Login() {
               {/* Mobile Logo */}
               <div className="lg:hidden mb-8 text-center">
                 <img 
-                  src="/src/assets/KechitaLogo.svg" 
+                  src="/src/assets/LogoHeader.svg" 
                   alt="Kechita Capital" 
-                  className="h-20 w-auto mx-auto"
+                  className="h-32 w-auto mx-auto"
                 />
               </div>
 
