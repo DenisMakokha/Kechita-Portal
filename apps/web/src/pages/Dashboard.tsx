@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../stores/auth';
 
 interface DashboardStats {
   pendingLeaves: number;
@@ -9,14 +10,19 @@ interface DashboardStats {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     pendingLeaves: 0,
     pendingClaims: 0,
     activeLoans: 0,
     unreadAnnouncements: 0
   });
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -24,15 +30,6 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Get current user
-      const userResponse = await fetch('http://localhost:4000/auth/me', {
-        credentials: 'include'
-      });
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUser(userData);
-      }
-
       // Fetch pending items
       const [leaves, claims, loans, announcements] = await Promise.all([
         fetch('http://localhost:4000/leave/applications?status=PENDING', { credentials: 'include' }),
@@ -61,90 +58,365 @@ export default function Dashboard() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    // In a real app, save to localStorage and apply to document
+  };
+
+  const menuItems = [
+    { icon: '🏠', label: 'Dashboard', path: '/dashboard', active: true },
+    { icon: '💼', label: 'Jobs', path: '/jobs' },
+    { icon: '📅', label: 'Leave', path: '/leave' },
+    { icon: '💰', label: 'Claims', path: '/claims' },
+    { icon: '🏦', label: 'Loans', path: '/loans' },
+    { icon: '📊', label: 'Performance', path: '/performance' },
+    { icon: '📄', label: 'Documents', path: '/documents' },
+    { icon: '📢', label: 'Announcements', path: '/announcements' },
+    { icon: '👤', label: 'Profile', path: '/profile' },
+  ];
+
   if (loading) {
-    return <div className="p-8">Loading dashboard...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#018ede] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white shadow-lg transition-all duration-300 flex flex-col fixed h-full z-30`}>
+        {/* Logo Section */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
+          {sidebarOpen ? (
+            <div className="flex items-center space-x-2">
+              <img src="/src/assets/LogoHeader.svg" alt="Kechita" className="h-8 w-8" />
+              <div>
+                <h1 className="text-sm font-bold text-gray-900">Kechita Capital</h1>
+                <p className="text-xs text-gray-500">Staff Portal</p>
+              </div>
+            </div>
+          ) : (
+            <img src="/src/assets/LogoHeader.svg" alt="Kechita" className="h-8 w-8 mx-auto" />
+          )}
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          {menuItems.map((item, index) => (
+            <Link
+              key={index}
+              to={item.path}
+              className={`flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg transition-all ${
+                item.active
+                  ? 'bg-gradient-to-r from-[#018ede] to-[#1674f9] text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <span className="text-xl">{item.icon}</span>
+              {sidebarOpen && <span className="font-medium">{item.label}</span>}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Sidebar Toggle */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="h-12 border-t border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          <svg
+            className={`w-5 h-5 text-gray-600 transition-transform ${sidebarOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className={`flex-1 ${sidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300`}>
+        {/* Top Header */}
+        <header className="h-16 bg-white shadow-sm sticky top-0 z-20">
+          <div className="h-full px-6 flex items-center justify-between">
+            {/* Page Title */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Welcome, {user?.firstName}!</h1>
-              <p className="text-sm text-gray-600">{user?.position} • {user?.branch}</p>
+              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-sm text-gray-500">Welcome back, {user?.firstName}!</p>
             </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-              Profile
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link to="/leave" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="text-gray-500 text-sm mb-2">Pending Leaves</div>
-            <div className="text-3xl font-bold text-blue-600">{stats.pendingLeaves}</div>
-          </Link>
-          <Link to="/claims" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="text-gray-500 text-sm mb-2">Pending Claims</div>
-            <div className="text-3xl font-bold text-green-600">{stats.pendingClaims}</div>
-          </Link>
-          <Link to="/loans" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="text-gray-500 text-sm mb-2">Active Loans</div>
-            <div className="text-3xl font-bold text-purple-600">{stats.activeLoans}</div>
-          </Link>
-          <Link to="/announcements" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="text-gray-500 text-sm mb-2">New Announcements</div>
-            <div className="text-3xl font-bold text-orange-600">{stats.unreadAnnouncements}</div>
-          </Link>
-        </div>
+            {/* Right Section: Notifications, Dark Mode, User Menu */}
+            <div className="flex items-center space-x-4">
+              {/* Notifications */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  {stats.unreadAnnouncements > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
+                </button>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <Link to="/jobs" className="p-4 border rounded-lg hover:border-blue-500 transition-colors text-center">
-              <div className="text-3xl mb-2">💼</div>
-              <div className="font-semibold">Browse Jobs</div>
-            </Link>
-            <Link to="/leave/apply" className="p-4 border rounded-lg hover:border-blue-500 transition-colors text-center">
-              <div className="text-3xl mb-2">📅</div>
-              <div className="font-semibold">Request Leave</div>
-            </Link>
-            <Link to="/claims/submit" className="p-4 border rounded-lg hover:border-blue-500 transition-colors text-center">
-              <div className="text-3xl mb-2">💰</div>
-              <div className="font-semibold">Submit Claim</div>
-            </Link>
-            <Link to="/loans/apply" className="p-4 border rounded-lg hover:border-blue-500 transition-colors text-center">
-              <div className="text-3xl mb-2">🏦</div>
-              <div className="font-semibold">Apply Loan</div>
-            </Link>
-            <Link to="/documents" className="p-4 border rounded-lg hover:border-blue-500 transition-colors text-center">
-              <div className="text-3xl mb-2">📄</div>
-              <div className="font-semibold">Documents</div>
-            </Link>
-          </div>
-        </div>
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+                    <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-[#018ede] to-[#1674f9]">
+                      <h3 className="font-semibold text-white">Notifications</h3>
+                      <p className="text-xs text-white/80">{stats.unreadAnnouncements} unread</p>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {stats.unreadAnnouncements > 0 ? (
+                        <div className="p-4 hover:bg-gray-50 cursor-pointer border-b">
+                          <p className="text-sm font-medium text-gray-900">New Announcements</p>
+                          <p className="text-xs text-gray-500 mt-1">You have {stats.unreadAnnouncements} unread announcements</p>
+                        </div>
+                      ) : (
+                        <div className="p-8 text-center text-gray-500">
+                          <svg className="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                          </svg>
+                          <p className="text-sm">No new notifications</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3 border-t bg-gray-50">
+                      <Link to="/announcements" className="text-sm text-[#018ede] hover:text-[#1674f9] font-medium">
+                        View all →
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-        {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Recent Applications</h2>
-            <div className="space-y-3">
-              <div className="text-gray-500 text-sm">No recent applications</div>
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Toggle Dark Mode"
+              >
+                {darkMode ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
+
+              {/* User Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#018ede] to-[#99cc33] flex items-center justify-center text-white font-bold">
+                    {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium text-gray-900">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-gray-500">{user?.role}</p>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* User Menu Dropdown */}
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+                    <div className="p-4 border-b bg-gradient-to-r from-[#018ede] to-[#1674f9]">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-lg">
+                          {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white">{user?.firstName} {user?.lastName}</p>
+                          <p className="text-xs text-white/80">{user?.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-2">
+                      <Link
+                        to="/profile"
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700">My Profile</span>
+                      </Link>
+                      <Link
+                        to="/settings"
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700">Settings</span>
+                      </Link>
+                    </div>
+                    <div className="p-2 border-t">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-red-600"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span className="text-sm font-medium">Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Announcements</h2>
-            <div className="space-y-3">
-              <div className="text-gray-500 text-sm">No new announcements</div>
+        </header>
+
+        {/* Main Dashboard Content */}
+        <main className="p-6">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Link to="/leave" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-blue-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Pending Leaves</p>
+                  <p className="text-3xl font-bold text-blue-600 mt-2">{stats.pendingLeaves}</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <span className="text-2xl">📅</span>
+                </div>
+              </div>
+            </Link>
+
+            <Link to="/claims" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-green-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Pending Claims</p>
+                  <p className="text-3xl font-bold text-green-600 mt-2">{stats.pendingClaims}</p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <span className="text-2xl">💰</span>
+                </div>
+              </div>
+            </Link>
+
+            <Link to="/loans" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-purple-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Active Loans</p>
+                  <p className="text-3xl font-bold text-purple-600 mt-2">{stats.activeLoans}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <span className="text-2xl">🏦</span>
+                </div>
+              </div>
+            </Link>
+
+            <Link to="/announcements" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-orange-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Announcements</p>
+                  <p className="text-3xl font-bold text-orange-600 mt-2">{stats.unreadAnnouncements}</p>
+                </div>
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <span className="text-2xl">📢</span>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <Link to="/jobs" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">💼</span>
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Browse Jobs</p>
+              </Link>
+
+              <Link to="/leave/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">📅</span>
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Request Leave</p>
+              </Link>
+
+              <Link to="/claims/submit" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">💰</span>
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Submit Claim</p>
+              </Link>
+
+              <Link to="/loans/apply" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">🏦</span>
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Apply Loan</p>
+              </Link>
+
+              <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">📄</span>
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Documents</p>
+              </Link>
             </div>
           </div>
-        </div>
+
+          {/* Recent Activity Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">📄</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">No recent applications</p>
+                    <p className="text-xs text-gray-500 mt-1">You haven't submitted any applications recently</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Latest Announcements</h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">📢</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">No new announcements</p>
+                    <p className="text-xs text-gray-500 mt-1">Check back later for updates</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
