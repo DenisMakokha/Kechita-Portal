@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Layout from '../components/Layout';
 
 export default function Applications(){
   const [jobId, setJobId] = useState<string>('');
@@ -12,6 +13,7 @@ export default function Applications(){
   };
 
   return (
+    <Layout>
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Applications</h2>
       <div className="flex gap-2">
@@ -28,5 +30,6 @@ export default function Applications(){
       </ul>
       <style>{`.input{padding:.6rem;border:1px solid #e5e7eb;border-radius:.75rem}.btn{padding:.6rem 1rem;background:#000;color:#fff;border-radius:.75rem}`}</style>
     </div>
+    </Layout>
   );
 }

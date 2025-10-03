@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Layout from '../components/Layout';
 
 export default function Interview(){
   const [form, setForm] = useState<any>({ applicationId:'', panel:'', mode:'ONLINE', location:'', startsAt:'', endsAt:'', notes:'' });
   const onChange=(e:any)=> setForm({...form, [e.target.name]: e.target.value});
   const submit = async (e:any)=>{ e.preventDefault(); await axios.post('http://localhost:4000/recruitment/interviews', form); alert('Interview scheduled'); };
   return (
+    <Layout>
+    <div>
     <form onSubmit={submit} className="space-y-3 max-w-xl">
       <h2 className="text-xl font-semibold">Schedule Interview</h2>
       <input className="input" name="applicationId" placeholder="Application ID" onChange={onChange} />
@@ -22,6 +25,10 @@ export default function Interview(){
       <button className="btn">Save</button>
       <style>{`.input{padding:.6rem;border:1px solid #e5e7eb;border-radius:.75rem;width:100%}.btn{padding:.6rem 1rem;background:#000;color:#fff;border-radius:.75rem}`}</style>
     </form>
+    <ICSDownloader />
+    <EmailPanel />
+    </div>
+    </Layout>
   );
 }
 
