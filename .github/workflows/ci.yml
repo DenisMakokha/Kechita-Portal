@@ -128,13 +128,8 @@ jobs:
       - name: Run npm audit
         run: pnpm audit --prod || true
       
-      - name: Run Snyk security scan
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --all-projects
+      # Snyk removed - it requires paid subscription
+      # Using npm audit instead (free)
 
   deploy-staging:
     name: Deploy to Staging
