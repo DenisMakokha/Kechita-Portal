@@ -7,6 +7,11 @@ interface DashboardStats {
   pendingClaims: number;
   activeLoans: number;
   unreadAnnouncements: number;
+  // HR Manager specific
+  totalApplications?: number;
+  pendingInterviews?: number;
+  activeJobPostings?: number;
+  totalStaff?: number;
 }
 
 export default function Dashboard() {
@@ -65,27 +70,44 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch pending items
-      const [leaves, claims, loans, announcements] = await Promise.all([
+      const isHRManager = user?.role === 'hr_manager';
+      
+      // Base stats for all users
+      const baseRequests = [
         fetch('http://localhost:4000/leave/applications?status=PENDING', { credentials: 'include' }),
         fetch('http://localhost:4000/claims/claims?status=PENDING', { credentials: 'include' }),
         fetch('http://localhost:4000/loans/loans?status=ACTIVE', { credentials: 'include' }),
         fetch('http://localhost:4000/communication/announcements?unread=true', { credentials: 'include' })
-      ]);
+      ];
 
-      const [leavesData, claimsData, loansData, announcementsData] = await Promise.all([
-        leaves.ok ? leaves.json() : [],
-        claims.ok ? claims.json() : [],
-        loans.ok ? loans.json() : [],
-        announcements.ok ? announcements.json() : []
-      ]);
+      // Additional requests for HR Manager
+      if (isHRManager) {
+        baseRequests.push(
+          fetch('http://localhost:4000/recruitment/applications', { credentials: 'include' }),
+          fetch('http://localhost:4000/recruitment/interviews?status=SCHEDULED', { credentials: 'include' }),
+          fetch('http://localhost:4000/recruitment/jobs?status=ACTIVE', { credentials: 'include' }),
+          fetch('http://localhost:4000/admin/users', { credentials: 'include' })
+        );
+      }
 
-      setStats({
-        pendingLeaves: Array.isArray(leavesData) ? leavesData.length : 0,
-        pendingClaims: Array.isArray(claimsData) ? claimsData.length : 0,
-        activeLoans: Array.isArray(loansData) ? loansData.length : 0,
-        unreadAnnouncements: Array.isArray(announcementsData) ? announcementsData.length : 0
-      });
+      const responses = await Promise.all(baseRequests);
+      const data = await Promise.all(responses.map(r => r.ok ? r.json() : []));
+
+      const newStats: DashboardStats = {
+        pendingLeaves: Array.isArray(data[0]) ? data[0].length : 0,
+        pendingClaims: Array.isArray(data[1]) ? data[1].length : 0,
+        activeLoans: Array.isArray(data[2]) ? data[2].length : 0,
+        unreadAnnouncements: Array.isArray(data[3]) ? data[3].length : 0,
+      };
+
+      if (isHRManager && data.length > 4) {
+        newStats.totalApplications = Array.isArray(data[4]) ? data[4].length : 0;
+        newStats.pendingInterviews = Array.isArray(data[5]) ? data[5].length : 0;
+        newStats.activeJobPostings = Array.isArray(data[6]) ? data[6].length : 0;
+        newStats.totalStaff = Array.isArray(data[7]) ? data[7].length : 0;
+      }
+
+      setStats(newStats);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
     } finally {
@@ -402,6 +424,34 @@ export default function Dashboard() {
 
         {/* Main Dashboard Content */}
         <main className="p-6">
+          {/* HR Manager Stats (if HR Manager role) */}
+          {user?.role === 'hr_manager' && (
+            <div className="bg-gradient-to-r from-[#018ede] to-[#1674f9] rounded-xl shadow-lg p-6 mb-6 text-white">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold">HR Manager Dashboard</h2>
+                <span className="text-2xl">👥</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Link to="/applications" className="bg-white/10 hover:bg-white/20 rounded-lg p-4 transition-all">
+                  <p className="text-sm text-white/80">Applications</p>
+                  <p className="text-2xl font-bold mt-1">{stats.totalApplications || 0}</p>
+                </Link>
+                <Link to="/interview" className="bg-white/10 hover:bg-white/20 rounded-lg p-4 transition-all">
+                  <p className="text-sm text-white/80">Interviews</p>
+                  <p className="text-2xl font-bold mt-1">{stats.pendingInterviews || 0}</p>
+                </Link>
+                <Link to="/post-job" className="bg-white/10 hover:bg-white/20 rounded-lg p-4 transition-all">
+                  <p className="text-sm text-white/80">Active Jobs</p>
+                  <p className="text-2xl font-bold mt-1">{stats.activeJobPostings || 0}</p>
+                </Link>
+                <div className="bg-white/10 rounded-lg p-4">
+                  <p className="text-sm text-white/80">Total Staff</p>
+                  <p className="text-2xl font-bold mt-1">{stats.totalStaff || 0}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Link to="/leave" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-1 border-l-4 border-blue-500">
@@ -455,8 +505,53 @@ export default function Dashboard() {
 
           {/* Quick Actions */}
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              {user?.role === 'hr_manager' ? 'HR Quick Actions' : 'Quick Actions'}
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {/* HR Manager Specific Actions */}
+              {user?.role === 'hr_manager' && (
+                <>
+                  <Link to="/post-job" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">➕</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Post Job</p>
+                  </Link>
+
+                  <Link to="/applications" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">📋</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Applications</p>
+                  </Link>
+
+                  <Link to="/interview" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">🎤</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Interviews</p>
+                  </Link>
+
+                  <Link to="/leave" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#99cc33] hover:bg-green-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">✅</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Approve Leave</p>
+                  </Link>
+
+                  <Link to="/announcements" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">📢</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Announcements</p>
+                  </Link>
+                </>
+              )}
+
+              {/* Standard User Actions */}
+              {user?.role !== 'hr_manager' && (
+                <>
               <Link to="/jobs" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
                 <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   <span className="text-2xl">💼</span>
@@ -485,12 +580,14 @@ export default function Dashboard() {
                 <p className="font-semibold text-gray-900 text-sm">Apply Loan</p>
               </Link>
 
-              <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
-                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-2xl">📄</span>
-                </div>
-                <p className="font-semibold text-gray-900 text-sm">Documents</p>
-              </Link>
+                  <Link to="/documents" className="p-4 border-2 border-gray-200 rounded-xl hover:border-[#018ede] hover:bg-blue-50 transition-all text-center group">
+                    <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">📄</span>
+                    </div>
+                    <p className="font-semibold text-gray-900 text-sm">Documents</p>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
