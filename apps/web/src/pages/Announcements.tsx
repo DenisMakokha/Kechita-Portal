@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 
 interface Announcement {
   id: string;
@@ -92,8 +93,8 @@ export default function Announcements() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Announcements</h1>
@@ -229,6 +230,6 @@ export default function Announcements() {
           </ul>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 
 interface User {
   id: string;
@@ -125,8 +126,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <Layout>
+      <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">My Profile</h1>
           <p className="text-gray-600">Manage your account information</p>
@@ -309,6 +310,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
