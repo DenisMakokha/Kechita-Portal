@@ -1442,3 +1442,248 @@ model RoleTemplate {
   usageCount  Int      @default(0)
   createdAt   DateTime @default(now())
 }
+
+// ==================== ATS PHASE 5: ANALYTICS & COMPLIANCE ====================
+
+model RecruitmentMetric {
+  id            String   @id @default(uuid())
+  jobId         String?
+  metricType    String   // "time_to_hire", "time_to_fill", "source_quality", "stage_conversion", "interviewer_effectiveness"
+  metricName    String
+  value         Decimal  @db.Decimal(12, 2)
+  unit          String   // "days", "percentage", "count", "score"
+  period        String   // "daily", "weekly", "monthly", "quarterly", "yearly"
+  startDate     DateTime
+  endDate       DateTime
+  breakdown     Json?    // Detailed breakdown by source, stage, etc.
+  comparisonPrevious Decimal? @db.Decimal(12, 2)
+  trend         String?  // "up", "down", "stable"
+  metadata      Json?
+  calculatedAt  DateTime @default(now())
+  
+  @@index([jobId, metricType, startDate])
+  @@index([metricType, period, startDate])
+}
+
+model SourceEffectiveness {
+  id            String   @id @default(uuid())
+  sourceName    String   // "LinkedIn", "Indeed", "Referral", "Career Page", etc.
+  jobId         String?
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  applicationsReceived Int @default(0)
+  qualified     Int      @default(0)
+  interviewed   Int      @default(0)
+  offered       Int      @default(0)
+  hired         Int      @default(0)
+  avgTimeToHire Decimal? @db.Decimal(10, 2)
+  avgQualityScore Decimal? @db.Decimal(5, 2)
+  costPerHire   Decimal? @db.Decimal(12, 2)
+  conversionRate Decimal @db.Decimal(5, 2)
+  qualityScore  Decimal  @db.Decimal(5, 2)
+  calculatedAt  DateTime @default(now())
+  
+  @@unique([sourceName, jobId, period, startDate])
+  @@index([sourceName, calculatedAt])
+}
+
+model PipelineConversion {
+  id            String   @id @default(uuid())
+  jobId         String
+  pipelineId    String
+  fromStageId   String?
+  toStageId     String?
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  candidates    Int      @default(0)
+  converted     Int      @default(0)
+  dropped       Int      @default(0)
+  avgDaysInStage Decimal? @db.Decimal(10, 2)
+  conversionRate Decimal @db.Decimal(5, 2)
+  dropRate      Decimal  @db.Decimal(5, 2)
+  bottleneck    Boolean  @default(false)
+  calculatedAt  DateTime @default(now())
+  
+  @@index([jobId, pipelineId, startDate])
+  @@index([period, calculatedAt])
+}
+
+model InterviewerPerformance {
+  id            String   @id @default(uuid())
+  interviewerId String
+  interviewerName String
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  interviewsConducted Int @default(0)
+  avgDuration   Decimal? @db.Decimal(10, 2)
+  avgRating     Decimal? @db.Decimal(3, 2)
+  recommendedHires Int   @default(0)
+  actualHires   Int      @default(0)
+  hireAccuracy  Decimal? @db.Decimal(5, 2)
+  noShowRate    Decimal? @db.Decimal(5, 2)
+  feedbackQuality Decimal? @db.Decimal(3, 2)
+  consistency   Decimal? @db.Decimal(3, 2)
+  calculatedAt  DateTime @default(now())
+  
+  @@unique([interviewerId, period, startDate])
+  @@index([interviewerId, calculatedAt])
+}
+
+model DiversityMetric {
+  id            String   @id @default(uuid())
+  jobId         String?
+  department    String?
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  category      String   // "gender", "ethnicity", "age_group", "disability", "veteran"
+  categoryValue String
+  applicants    Int      @default(0)
+  screened      Int      @default(0)
+  interviewed   Int      @default(0)
+  offered       Int      @default(0)
+  hired         Int      @default(0)
+  currentStaff  Int?     @default(0)
+  representationPct Decimal @db.Decimal(5, 2)
+  hiringPct     Decimal  @db.Decimal(5, 2)
+  gapAnalysis   Decimal? @db.Decimal(5, 2)
+  calculatedAt  DateTime @default(now())
+  
+  @@index([jobId, category, startDate])
+  @@index([period, category, calculatedAt])
+}
+
+model ComplianceReport {
+  id            String   @id @default(uuid())
+  reportType    String   // "EEO1", "OFCCP", "VETS4212", "GDPR", "Custom"
+  reportName    String
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  data          Json     // Report data structure
+  fileUrl       String?
+  status        String   @default("DRAFT") // DRAFT, GENERATED, SUBMITTED, APPROVED
+  generatedBy   String
+  generatedAt   DateTime @default(now())
+  submittedAt   DateTime?
+  submittedBy   String?
+  approvedAt    DateTime?
+  approvedBy    String?
+  notes         String?  @db.Text
+  metadata      Json?
+  
+  @@index([reportType, period, startDate])
+  @@index([status, generatedAt])
+}
+
+model OfferAnalysis {
+  id            String   @id @default(uuid())
+  jobId         String?
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  offersExtended Int     @default(0)
+  offersAccepted Int     @default(0)
+  offersRejected Int     @default(0)
+  offersNegotiated Int   @default(0)
+  acceptanceRate Decimal @db.Decimal(5, 2)
+  avgTimeToAccept Decimal? @db.Decimal(10, 2)
+  avgSalaryOffered Decimal? @db.Decimal(12, 2)
+  avgSalaryAccepted Decimal? @db.Decimal(12, 2)
+  salaryNegotiationPct Decimal? @db.Decimal(5, 2)
+  topRejectReasons Json?
+  calculatedAt  DateTime @default(now())
+  
+  @@index([jobId, startDate])
+  @@index([period, calculatedAt])
+}
+
+model CostPerHire {
+  id            String   @id @default(uuid())
+  jobId         String?
+  position      String?
+  department    String?
+  hireId        String?  // Application ID of hired candidate
+  hiringDate    DateTime
+  internalCosts Decimal  @db.Decimal(12, 2) // Recruiter time, internal tools
+  externalCosts Decimal  @db.Decimal(12, 2) // Job boards, agencies, advertising
+  relocationCosts Decimal? @db.Decimal(12, 2)
+  signingBonus  Decimal? @db.Decimal(12, 2)
+  totalCost     Decimal  @db.Decimal(12, 2)
+  timeToHire    Int      // Days
+  source        String?
+  costBreakdown Json
+  calculatedBy  String
+  calculatedAt  DateTime @default(now())
+  
+  @@index([jobId, hiringDate])
+  @@index([department, hiringDate])
+}
+
+model QualityOfHire {
+  id            String   @id @default(uuid())
+  hireId        String   @unique // Application ID
+  employeeId    String?
+  jobId         String
+  hireDate      DateTime
+  evaluationPeriod String // "30_days", "60_days", "90_days", "180_days", "365_days"
+  performanceRating Decimal? @db.Decimal(3, 2)
+  managerSatisfaction Decimal? @db.Decimal(3, 2)
+  cultureFit    Decimal? @db.Decimal(3, 2)
+  productivity  Decimal? @db.Decimal(3, 2)
+  retention     Boolean  @default(true)
+  terminationDate DateTime?
+  terminationReason String?
+  promotedWithinYear Boolean @default(false)
+  overallScore  Decimal  @db.Decimal(3, 2)
+  evaluatedBy   String?
+  evaluatedAt   DateTime?
+  metadata      Json?
+  
+  @@index([jobId, evaluationPeriod])
+  @@index([hireDate, retention])
+}
+
+model CustomReport {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?  @db.Text
+  reportType    String   // "recruitment", "compliance", "performance"
+  filters       Json
+  columns       Json
+  groupBy       Json?
+  sortBy        Json?
+  chartType     String?  // "bar", "line", "pie", "table"
+  schedule      String?  // Cron expression for scheduled reports
+  recipients    String[] // Email addresses
+  isPublic      Boolean  @default(false)
+  isPinned      Boolean  @default(false)
+  lastRun       DateTime?
+  nextRun       DateTime?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  executions CustomReportExecution[]
+  
+  @@index([createdBy, createdAt])
+  @@index([schedule, nextRun])
+}
+
+model CustomReportExecution {
+  id            String   @id @default(uuid())
+  reportId      String
+  report        CustomReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  executedBy    String?  // NULL for scheduled runs
+  status        String   @default("RUNNING")
+  rowCount      Int?
+  fileUrl       String?
+  errorMessage  String?  @db.Text
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  
+  @@index([reportId, startedAt])
+}
