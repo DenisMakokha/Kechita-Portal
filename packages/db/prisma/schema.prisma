@@ -404,6 +404,144 @@ model TalentPoolEntry {
   @@index([addedAt])
 }
 
+// ==================== ATS PHASE 2: COMMUNICATION ====================
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  category    String   // "interview_invite", "offer", "rejection", "follow_up", "reminder"
+  subject     String
+  bodyHtml    String   @db.Text
+  bodyText    String   @db.Text
+  variables   Json     // Available variables: {{firstName}}, {{jobTitle}}, etc.
+  isDefault   Boolean  @default(false)
+  isSystem    Boolean  @default(false)
+  locale      String   @default("en")
+  jobId       String?
+  createdBy   String
+  active      Boolean  @default(true)
+  usageCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  emails CandidateEmail[]
+  
+  @@index([category, active])
+  @@index([jobId])
+}
+
+model CandidateEmail {
+  id            String   @id @default(uuid())
+  applicationId String
+  templateId    String?
+  template      EmailTemplate? @relation(fields: [templateId], references: [id])
+  to            String
+  cc            String[]
+  bcc           String[]
+  subject       String
+  bodyHtml      String   @db.Text
+  bodyText      String   @db.Text
+  attachments   Json?
+  status        String   @default("PENDING") // PENDING, SENT, FAILED, BOUNCED
+  sentAt        DateTime?
+  deliveredAt   DateTime?
+  openedAt      DateTime?
+  clickedAt     DateTime?
+  repliedAt     DateTime?
+  errorMessage  String?  @db.Text
+  metadata      Json?    // Track opens, clicks, etc.
+  sentBy        String
+  createdAt     DateTime @default(now())
+  
+  @@index([applicationId, createdAt])
+  @@index([status, sentAt])
+}
+
+model InterviewScorecard {
+  id            String   @id @default(uuid())
+  templateId    String?
+  template      ScorecardTemplate? @relation(fields: [templateId], references: [id])
+  applicationId String
+  interviewId   String?
+  evaluatorId   String
+  evaluatorName String
+  evaluatorRole String
+  overallRating Int      // 1-5
+  recommendHire Boolean?
+  strengths     String?  @db.Text
+  weaknesses    String?  @db.Text
+  comments      String?  @db.Text
+  scores        Json     // Array of {criterionId, criterionName, score, notes}
+  submittedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([applicationId, submittedAt])
+  @@index([evaluatorId])
+}
+
+model ScorecardTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String?  @db.Text
+  criteria    Json     // Array of {id, name, description, weight, scale}
+  isDefault   Boolean  @default(false)
+  jobId       String?
+  position    String?
+  createdBy   String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  scorecards InterviewScorecard[]
+  
+  @@index([jobId, active])
+}
+
+model CommunicationLog {
+  id            String   @id @default(uuid())
+  applicationId String
+  type          String   // "email", "phone", "sms", "meeting", "note"
+  direction     String   // "inbound", "outbound"
+  subject       String?
+  body          String?  @db.Text
+  attachments   Json?
+  participants  String[] // User IDs or external emails
+  duration      Int?     // For calls/meetings in seconds
+  outcome       String?
+  followUpDate  DateTime?
+  contactedBy   String
+  contactedAt   DateTime @default(now())
+  metadata      Json?
+  
+  @@index([applicationId, contactedAt])
+  @@index([type, contactedAt])
+}
+
+model BulkEmailCampaign {
+  id          String   @id @default(uuid())
+  name        String
+  templateId  String
+  jobId       String?
+  filters     Json     // Criteria for selecting candidates
+  recipients  Int      @default(0)
+  sent        Int      @default(0)
+  delivered   Int      @default(0)
+  opened      Int      @default(0)
+  clicked     Int      @default(0)
+  failed      Int      @default(0)
+  status      String   @default("DRAFT") // DRAFT, SCHEDULED, SENDING, COMPLETED, FAILED
+  scheduledAt DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([status, scheduledAt])
+  @@index([jobId])
+}
+
 // ==================== LEAVE MANAGEMENT MODULE ====================
 
 model LeaveType {
