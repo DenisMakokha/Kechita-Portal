@@ -1687,3 +1687,308 @@ model CustomReportExecution {
   
   @@index([reportId, startedAt])
 }
+
+// ==================== ATS PHASE 6: AUTOMATION & INTEGRATION ====================
+
+model WebhookEndpoint {
+  id            String   @id @default(uuid())
+  name          String
+  url           String
+  method        String   @default("POST")
+  headers       Json?    // Custom headers
+  events        String[] // Event types to subscribe to
+  isActive      Boolean  @default(true)
+  secret        String?  // For signature verification
+  retryPolicy   Json     // {maxRetries, backoffMultiplier, maxBackoff}
+  timeout       Int      @default(30) // Seconds
+  lastTriggered DateTime?
+  successCount  Int      @default(0)
+  failureCount  Int      @default(0)
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  deliveries WebhookDelivery[]
+  
+  @@index([isActive, events])
+}
+
+model WebhookDelivery {
+  id            String   @id @default(uuid())
+  endpointId    String
+  endpoint      WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  eventType     String
+  payload       Json
+  status        String   @default("PENDING") // PENDING, SUCCESS, FAILED, RETRY
+  responseCode  Int?
+  responseBody  String?  @db.Text
+  errorMessage  String?  @db.Text
+  attempts      Int      @default(0)
+  nextRetryAt   DateTime?
+  deliveredAt   DateTime?
+  createdAt     DateTime @default(now())
+  
+  @@index([endpointId, status])
+  @@index([eventType, createdAt])
+}
+
+model Integration {
+  id            String   @id @default(uuid())
+  type          String   // "job_board", "calendar", "hris", "background_check", "video_interview"
+  provider      String   // "linkedin", "indeed", "google_calendar", "bamboohr", "checkr", "zoom"
+  name          String
+  config        Json     // Provider-specific configuration
+  credentials   Json     // Encrypted credentials
+  isActive      Boolean  @default(true)
+  syncEnabled   Boolean  @default(false)
+  syncFrequency String?  // Cron expression
+  lastSyncAt    DateTime?
+  nextSyncAt    DateTime?
+  syncStatus    String?  // "SUCCESS", "FAILED", "IN_PROGRESS"
+  errorLog      Json?
+  metadata      Json?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  syncLogs IntegrationSyncLog[]
+  jobBoardPosts JobBoardPost[]
+  
+  @@unique([type, provider])
+  @@index([isActive, syncEnabled])
+}
+
+model IntegrationSyncLog {
+  id            String   @id @default(uuid())
+  integrationId String
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  syncType      String   // "manual", "scheduled", "realtime"
+  status        String   // "SUCCESS", "FAILED", "PARTIAL"
+  recordsProcessed Int   @default(0)
+  recordsSuccess Int     @default(0)
+  recordsFailed Int      @default(0)
+  duration      Int?     // Milliseconds
+  errorDetails  Json?
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  
+  @@index([integrationId, startedAt])
+}
+
+model JobBoardPost {
+  id            String   @id @default(uuid())
+  integrationId String
+  integration   Integration @relation(fields: [integrationId], references: [id])
+  jobId         String
+  externalId    String?  // ID on the external job board
+  boardName     String   // "LinkedIn", "Indeed", "Glassdoor"
+  status        String   @default("DRAFT") // DRAFT, POSTED, EXPIRED, REMOVED
+  url           String?
+  views         Int      @default(0)
+  clicks        Int      @default(0)
+  applications  Int      @default(0)
+  budget        Decimal? @db.Decimal(12, 2)
+  spent         Decimal? @db.Decimal(12, 2)
+  postedAt      DateTime?
+  expiresAt     DateTime?
+  lastSyncAt    DateTime?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([integrationId, externalId])
+  @@index([jobId, status])
+  @@index([boardName, postedAt])
+}
+
+model CalendarEvent {
+  id            String   @id @default(uuid())
+  integrationId String?
+  provider      String   // "google", "outlook", "internal"
+  externalId    String?  // External calendar event ID
+  applicationId String?
+  interviewId   String?
+  eventType     String   // "interview", "meeting", "reminder"
+  title         String
+  description   String?  @db.Text
+  location      String?
+  meetingUrl    String?  // Zoom/Teams link
+  startTime     DateTime
+  endTime       DateTime
+  timezone      String   @default("UTC")
+  attendees     Json     // Array of {email, name, status}
+  reminders     Json?    // Array of reminder configs
+  status        String   @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED, RESCHEDULED
+  cancelReason  String?  @db.Text
+  syncStatus    String?  // "SYNCED", "PENDING", "FAILED"
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([applicationId, startTime])
+  @@index([provider, externalId])
+}
+
+model BackgroundCheckRequest {
+  id            String   @id @default(uuid())
+  integrationId String?
+  provider      String   // "checkr", "sterling", "accurate"
+  externalId    String?  // External request ID
+  applicationId String
+  candidateName String
+  candidateEmail String
+  checkType     String   // "criminal", "employment", "education", "credit", "drug", "comprehensive"
+  packageId     String?  // Provider package ID
+  status        String   @default("PENDING") // PENDING, IN_PROGRESS, CLEAR, CONSIDER, DISPUTE, CANCELLED
+  result        Json?    // Detailed results
+  reportUrl     String?
+  consentGiven  Boolean  @default(false)
+  consentDate   DateTime?
+  completedAt   DateTime?
+  estimatedCompletion DateTime?
+  cost          Decimal? @db.Decimal(10, 2)
+  notes         String?  @db.Text
+  requestedBy   String
+  requestedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([applicationId, status])
+  @@index([provider, externalId])
+}
+
+model VideoInterview {
+  id            String   @id @default(uuid())
+  integrationId String?
+  provider      String   // "zoom", "teams", "google_meet"
+  externalId    String?  // Meeting ID from provider
+  applicationId String
+  interviewId   String?
+  title         String
+  meetingUrl    String
+  password      String?
+  startTime     DateTime
+  duration      Int      // Minutes
+  hostEmail     String
+  participants  Json     // Array of participant emails
+  recordingUrl  String?
+  recordingEnabled Boolean @default(true)
+  status        String   @default("SCHEDULED") // SCHEDULED, STARTED, COMPLETED, CANCELLED
+  actualStartTime DateTime?
+  actualEndTime DateTime?
+  attendanceLog Json?    // Who joined, when, duration
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([applicationId, startTime])
+  @@index([provider, externalId])
+}
+
+model AutomationRule {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?  @db.Text
+  trigger       String   // "application_received", "stage_change", "interview_completed", "offer_sent", "time_based"
+  triggerConfig Json     // Trigger-specific configuration
+  conditions    Json     // Array of conditions to check
+  actions       Json     // Array of actions to perform
+  isActive      Boolean  @default(true)
+  priority      Int      @default(0)
+  executionCount Int     @default(0)
+  lastExecuted  DateTime?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  executions AutomationExecution[]
+  
+  @@index([trigger, isActive])
+}
+
+model AutomationExecution {
+  id            String   @id @default(uuid())
+  ruleId        String
+  rule          AutomationRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  entityType    String   // "application", "interview", "offer"
+  entityId      String
+  status        String   @default("SUCCESS") // SUCCESS, FAILED, PARTIAL
+  actionsExecuted Int    @default(0)
+  actionsFailed Int      @default(0)
+  executionLog  Json     // Detailed log of what happened
+  duration      Int?     // Milliseconds
+  errorMessage  String?  @db.Text
+  executedAt    DateTime @default(now())
+  
+  @@index([ruleId, executedAt])
+  @@index([entityType, entityId])
+}
+
+model NotificationChannel {
+  id            String   @id @default(uuid())
+  type          String   // "slack", "teams", "email", "sms", "webhook"
+  name          String
+  config        Json     // Channel-specific config (webhook URL, token, etc.)
+  events        String[] // Event types to notify
+  isActive      Boolean  @default(true)
+  recipients    Json?    // Users, groups, or channels
+  messageTemplate Json?  // Custom message templates
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  notifications NotificationLog[]
+  
+  @@index([type, isActive])
+}
+
+model NotificationLog {
+  id            String   @id @default(uuid())
+  channelId     String
+  channel       NotificationChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  eventType     String
+  message       String   @db.Text
+  payload       Json
+  status        String   @default("PENDING") // PENDING, SENT, FAILED
+  responseCode  Int?
+  errorMessage  String?  @db.Text
+  sentAt        DateTime?
+  createdAt     DateTime @default(now())
+  
+  @@index([channelId, eventType])
+  @@index([status, createdAt])
+}
+
+model ScheduledJob {
+  id            String   @id @default(uuid())
+  jobType       String   // "sync_integration", "send_reminders", "calculate_metrics", "cleanup"
+  schedule      String   // Cron expression
+  isActive      Boolean  @default(true)
+  lastRun       DateTime?
+  nextRun       DateTime
+  runCount      Int      @default(0)
+  successCount  Int      @default(0)
+  failureCount  Int      @default(0)
+  avgDuration   Int?     // Average duration in ms
+  config        Json?
+  createdBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  runs ScheduledJobRun[]
+  
+  @@index([isActive, nextRun])
+}
+
+model ScheduledJobRun {
+  id            String   @id @default(uuid())
+  jobId         String
+  job           ScheduledJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status        String   @default("RUNNING") // RUNNING, SUCCESS, FAILED
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  duration      Int?     // Milliseconds
+  output        Json?
+  errorMessage  String?  @db.Text
+  
+  @@index([jobId, startedAt])
+}
