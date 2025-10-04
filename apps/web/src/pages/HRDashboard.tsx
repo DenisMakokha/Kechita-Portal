@@ -386,12 +386,12 @@ export default function HRDashboard() {
               <span className="text-2xl">👥</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Staff Management</h2>
-              <p className="text-gray-500 text-sm">Employee records and lifecycle</p>
+              <h2 className="text-2xl font-bold text-gray-900">Staff Management & Lifecycle</h2>
+              <p className="text-gray-500 text-sm">Complete employee management system</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <Link to="/staff-records" className="p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center group">
               <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <span className="text-2xl">📋</span>
@@ -410,10 +410,18 @@ export default function HRDashboard() {
 
             <Link to="/staff-records" className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all text-center group">
               <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                <span className="text-2xl">📈</span>
+                <span className="text-2xl">📊</span>
               </div>
-              <p className="font-semibold text-gray-900 text-sm">Promotions</p>
-              <p className="text-xs text-gray-500 mt-1">Track history</p>
+              <p className="font-semibold text-gray-900 text-sm">View History</p>
+              <p className="text-xs text-gray-500 mt-1">Promotions</p>
+            </Link>
+
+            <Link to="/staff-records" className="p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all text-center group">
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <span className="text-2xl">⬆️</span>
+              </div>
+              <p className="font-semibold text-gray-900 text-sm">Promote Staff</p>
+              <p className="text-xs text-gray-500 mt-1">New promotion</p>
             </Link>
 
             <Link to="/staff-records" className="p-4 border-2 border-gray-200 rounded-xl hover:border-red-500 hover:bg-red-50 transition-all text-center group">
@@ -433,18 +441,42 @@ export default function HRDashboard() {
               <span className="text-2xl">📧</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Email & Communication</h2>
-              <p className="text-gray-500 text-sm">Internal email and announcements</p>
+              <h2 className="text-2xl font-bold text-gray-900">Email & Communication Hub</h2>
+              <p className="text-gray-500 text-sm">Full email client and communication tools</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Link to="/email-inbox" className="p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all text-center group">
               <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <span className="text-2xl">📬</span>
               </div>
               <p className="font-semibold text-gray-900 text-sm">Inbox</p>
               <p className="text-xs text-gray-500 mt-1">{stats.unreadEmails} unread</p>
+            </Link>
+
+            <Link to="/email-inbox?folder=sent" className="p-4 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all text-center group">
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <span className="text-2xl">📤</span>
+              </div>
+              <p className="font-semibold text-gray-900 text-sm">Sent</p>
+              <p className="text-xs text-gray-500 mt-1">Sent items</p>
+            </Link>
+
+            <Link to="/email-inbox?folder=drafts" className="p-4 border-2 border-gray-200 rounded-xl hover:border-amber-500 hover:bg-amber-50 transition-all text-center group">
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <span className="text-2xl">📝</span>
+              </div>
+              <p className="font-semibold text-gray-900 text-sm">Drafts</p>
+              <p className="text-xs text-gray-500 mt-1">Saved drafts</p>
+            </Link>
+
+            <Link to="/email-inbox?compose=true" className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all text-center group">
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <span className="text-2xl">✉️</span>
+              </div>
+              <p className="font-semibold text-gray-900 text-sm">Compose</p>
+              <p className="text-xs text-gray-500 mt-1">New email</p>
             </Link>
 
             <Link to="/email-templates" className="p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all text-center group">
@@ -455,16 +487,8 @@ export default function HRDashboard() {
               <p className="text-xs text-gray-500 mt-1">{stats.emailTemplates} saved</p>
             </Link>
 
-            <Link to="/screening-questions" className="p-4 border-2 border-gray-200 rounded-xl hover:border-amber-500 hover:bg-amber-50 transition-all text-center group">
-              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                <span className="text-2xl">❓</span>
-              </div>
-              <p className="font-semibold text-gray-900 text-sm">Screening</p>
-              <p className="text-xs text-gray-500 mt-1">Questions</p>
-            </Link>
-
-            <Link to="/announcements" className="p-4 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all text-center group">
-              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+            <Link to="/announcements" className="p-4 border-2 border-gray-200 rounded-xl hover:border-pink-500 hover:bg-pink-50 transition-all text-center group">
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
                 <span className="text-2xl">📢</span>
               </div>
               <p className="font-semibold text-gray-900 text-sm">Announcements</p>
@@ -519,30 +543,39 @@ export default function HRDashboard() {
                 <span className="text-2xl">💰</span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Claims & Loans</h2>
-                <p className="text-gray-500 text-sm">Financial requests</p>
+                <h2 className="text-xl font-bold text-gray-900">Claims & Loans Management</h2>
+                <p className="text-gray-500 text-sm">Financial requests & approvals</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-3 bg-green-50 rounded-xl">
+              <div className="p-3 bg-green-50 rounded-xl border-2 border-green-200">
                 <p className="text-xs text-gray-600 mb-1">Pending Claims</p>
                 <p className="text-2xl font-bold text-green-600">{stats.pendingClaims}</p>
                 <p className="text-xs text-gray-500 mt-1">KES {stats.totalClaimsAmount.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-blue-50 rounded-xl">
+              <div className="p-3 bg-blue-50 rounded-xl border-2 border-blue-200">
                 <p className="text-xs text-gray-600 mb-1">Pending Loans</p>
                 <p className="text-2xl font-bold text-blue-600">{stats.pendingLoans}</p>
                 <p className="text-xs text-gray-500 mt-1">KES {stats.totalLoansAmount.toLocaleString()}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Link to="/claims" className="px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold text-center text-sm">
-                View Claims
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <Link to="/claims" className="px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold text-center text-sm flex items-center justify-center gap-2">
+                <span>✅</span> Approve Claims
               </Link>
-              <Link to="/loans" className="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold text-center text-sm">
-                View Loans
+              <Link to="/loans" className="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold text-center text-sm flex items-center justify-center gap-2">
+                <span>✅</span> Approve Loans
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Link to="/claims-history" className="px-4 py-3 border-2 border-green-500 text-green-600 rounded-xl hover:bg-green-50 transition-all font-semibold text-center text-sm">
+                Claims History
+              </Link>
+              <Link to="/loans-history" className="px-4 py-3 border-2 border-blue-500 text-blue-600 rounded-xl hover:bg-blue-50 transition-all font-semibold text-center text-sm">
+                Loans History
               </Link>
             </div>
           </div>
