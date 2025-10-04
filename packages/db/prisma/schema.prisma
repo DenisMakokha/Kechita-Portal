@@ -404,6 +404,112 @@ model TalentPoolEntry {
   @@index([addedAt])
 }
 
+// ==================== ATS PHASE 3: SMART SCREENING ====================
+
+model ScreeningQuestion {
+  id            String   @id @default(uuid())
+  jobId         String
+  question      String   @db.Text
+  questionType  String   // "text", "multiple_choice", "yes_no", "number", "date"
+  options       Json?    // For multiple choice
+  isKnockout    Boolean  @default(false)
+  knockoutAnswer String?  // Expected answer for knockout
+  required      Boolean  @default(true)
+  order         Int
+  weight        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  answers ScreeningAnswer[]
+  
+  @@index([jobId, order])
+}
+
+model ScreeningAnswer {
+  id            String   @id @default(uuid())
+  questionId    String
+  question      ScreeningQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  applicationId String
+  answer        String   @db.Text
+  isKnockout    Boolean  @default(false)
+  passedKnockout Boolean @default(true)
+  submittedAt   DateTime @default(now())
+  
+  @@index([applicationId])
+  @@index([questionId])
+}
+
+model ResumeParser {
+  id            String   @id @default(uuid())
+  applicationId String   @unique
+  rawText       String   @db.Text
+  parsedData    Json     // Structured data: name, email, phone, education, experience, skills
+  skills        String[] // Extracted skills
+  experience    Json?    // Years of experience by category
+  education     Json?    // Education details
+  certifications String[]
+  keywords      String[] // Extracted keywords
+  confidence    Decimal  @db.Decimal(5, 2) // Parsing confidence score
+  parseMethod   String   // "regex", "ai", "hybrid"
+  parsedAt      DateTime @default(now())
+  
+  @@index([applicationId])
+}
+
+model AutoScoreRule {
+  id            String   @id @default(uuid())
+  jobId         String?
+  name          String
+  description   String?  @db.Text
+  ruleType      String   // "skill_match", "experience_match", "education_match", "keyword_match", "location_match"
+  criteria      Json     // Rule criteria
+  points        Int      // Points to award
+  isActive      Boolean  @default(true)
+  priority      Int      @default(0)
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([jobId, isActive])
+  @@index([ruleType])
+}
+
+model DuplicateCandidate {
+  id            String   @id @default(uuid())
+  application1Id String
+  application2Id String
+  matchType     String   // "email", "phone", "name", "resume"
+  confidence    Decimal  @db.Decimal(5, 2)
+  status        String   @default("PENDING") // PENDING, MERGED, IGNORED
+  mergedInto    String?  // ID of the application kept
+  resolvedBy    String?
+  resolvedAt    DateTime?
+  detectedAt    DateTime @default(now())
+  metadata      Json?
+  
+  @@unique([application1Id, application2Id])
+  @@index([status, confidence])
+}
+
+model SmartTriageRule {
+  id            String   @id @default(uuid())
+  jobId         String?
+  name          String
+  description   String?  @db.Text
+  conditions    Json     // Array of conditions: {field, operator, value}
+  action        String   // "auto_reject", "flag_review", "fast_track", "assign_stage"
+  actionParams  Json?    // Parameters for the action
+  isActive      Boolean  @default(true)
+  priority      Int      @default(0)
+  executionCount Int     @default(0)
+  lastExecuted  DateTime?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([jobId, isActive])
+}
+
 // ==================== ATS PHASE 2: COMMUNICATION ====================
 
 model EmailTemplate {
