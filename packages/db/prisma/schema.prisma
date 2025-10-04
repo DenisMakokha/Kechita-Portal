@@ -114,11 +114,16 @@ model JobPosting {
   id            String   @id @default(uuid())
   title         String
   description   String   @db.Text
+  requirements  String?  @db.Text // ATS: Job requirements
+  responsibilities String? @db.Text // ATS: Job responsibilities
+  salary        String?  // ATS: Salary range
   branch        String
   region        String
   deadline      DateTime
   employmentType String
   status        String   @default("ACTIVE")
+  pipelineId    String?  // ATS: Custom pipeline for this job
+  pipeline      Pipeline? @relation(fields: [pipelineId], references: [id])
   createdById   String
   createdBy     User     @relation("JobCreator", fields: [createdById], references: [id])
   createdAt     DateTime @default(now())
@@ -127,6 +132,8 @@ model JobPosting {
   applications  Application[]
   rules         RecruitmentRuleSet?
   regretTemplates RegretTemplate[]
+  
+  @@index([pipelineId])
 }
 
 model Application {
@@ -141,14 +148,19 @@ model Application {
   resumeUrl     String?
   resumeText    String?  @db.Text
   status        String   @default("RECEIVED")
+  stageId       String?  // ATS: Current pipeline stage
+  stage         Stage?   @relation(fields: [stageId], references: [id])
   score         Int?
   scoringNotes  Json?
+  source        String?  // ATS: Application source (LinkedIn, Indeed, Referral, etc.)
+  tags          String[] // ATS: Quick tags array
   backgroundCheckStatus String? @default("PENDING")
   backgroundCheckNotes  String?  @db.Text
   backgroundCheckDate   DateTime?
   referenceCheckStatus  String? @default("PENDING")
   referenceCheckNotes   String?  @db.Text
   references            Json?
+  lastActivityAt DateTime @default(now()) // ATS: Last activity timestamp
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   
@@ -156,6 +168,14 @@ model Application {
   offers        Offer[]
   onboardingItems OnboardingItem[]
   backgroundChecks BackgroundCheck[]
+  notes         CandidateNote[] // ATS: Team notes
+  candidateTags CandidateTag[]  // ATS: Detailed tags
+  activities    CandidateActivity[] // ATS: Activity timeline
+  talentPools   TalentPoolEntry[] // ATS: Talent pool membership
+  
+  @@index([stageId])
+  @@index([email])
+  @@index([lastActivityAt])
 }
 
 model BackgroundCheck {
@@ -268,6 +288,120 @@ model RegretTemplate {
   job       JobPosting? @relation(fields: [jobId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ==================== ATS: PIPELINE SYSTEM ====================
+
+model Pipeline {
+  id        String   @id @default(uuid())
+  name      String
+  description String? @db.Text
+  isDefault Boolean  @default(false)
+  isTemplate Boolean @default(false)
+  organizationId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  stages    Stage[]
+  jobs      JobPosting[]
+  
+  @@index([isDefault, isTemplate])
+}
+
+model Stage {
+  id          String   @id @default(uuid())
+  pipelineId  String
+  pipeline    Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  name        String
+  description String?  @db.Text
+  order       Int
+  color       String   @default("#3B82F6")
+  icon        String?
+  type        String   @default("CUSTOM") // APPLIED, SCREENING, INTERVIEW, OFFER, HIRED, REJECTED, CUSTOM
+  requirements Json?   // Requirements to advance: {"interviewFeedback": true, "documentsUploaded": true}
+  autoAdvance Boolean  @default(false)
+  advanceConditions Json? // Conditions for auto-advance
+  slaHours    Int?     // SLA in hours
+  notifyOnEntry Boolean @default(false)
+  notifyOnStale Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  applications Application[]
+  activities   CandidateActivity[]
+  
+  @@unique([pipelineId, order])
+  @@index([pipelineId, order])
+}
+
+// ==================== ATS: COLLABORATION ====================
+
+model CandidateNote {
+  id            String   @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authorId      String
+  content       String   @db.Text
+  mentions      String[] // User IDs mentioned with @
+  isInternal    Boolean  @default(true) // Internal vs shared with candidate
+  attachments   Json?    // Array of attachment URLs
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([applicationId, createdAt])
+  @@index([authorId])
+}
+
+model CandidateTag {
+  id            String   @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  name          String   // "shortlist", "follow-up", "strong-culture-fit"
+  color         String   @default("#10B981")
+  category      String?  // "status", "skill", "culture", "custom"
+  addedById     String
+  addedAt       DateTime @default(now())
+  
+  @@unique([applicationId, name])
+  @@index([applicationId])
+  @@index([name])
+}
+
+model CandidateActivity {
+  id            String   @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  activityType  String   // "stage_change", "note_added", "email_sent", "interview_scheduled", "document_uploaded", "score_updated"
+  userId        String?  // Who performed the action
+  title         String   // Display title
+  description   String?  @db.Text
+  metadata      Json?    // Additional data (old stage, new stage, etc.)
+  stageId       String?  // For stage_change activities
+  stage         Stage?   @relation(fields: [stageId], references: [id])
+  createdAt     DateTime @default(now())
+  
+  @@index([applicationId, createdAt])
+  @@index([activityType])
+}
+
+// ==================== ATS: TALENT POOL ====================
+
+model TalentPoolEntry {
+  id            String   @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  poolName      String   @default("general") // "engineering", "sales", "general"
+  tags          String[]
+  notes         String?  @db.Text
+  rating        Int?     // 1-5 rating
+  availableFrom DateTime?
+  addedById     String
+  addedAt       DateTime @default(now())
+  lastContactedAt DateTime?
+  
+  @@unique([applicationId, poolName])
+  @@index([poolName, rating])
+  @@index([addedAt])
 }
 
 // ==================== LEAVE MANAGEMENT MODULE ====================
