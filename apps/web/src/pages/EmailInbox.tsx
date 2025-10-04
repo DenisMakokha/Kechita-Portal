@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { generateEmailSignature } from '../utils/emailSignature';
+import RichTextEditor from '../components/RichTextEditor';
 
 interface Email {
   id: string;
@@ -524,12 +525,11 @@ export default function EmailInbox() {
               </div>
 
               <div>
-                <textarea
-                  placeholder="Write your message..."
+                <RichTextEditor
                   value={composeData.body}
-                  onChange={(e) => setComposeData({ ...composeData, body: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  rows={12}
+                  onChange={(value) => setComposeData({ ...composeData, body: value })}
+                  placeholder="Write your message..."
+                  height="350px"
                 />
               </div>
 

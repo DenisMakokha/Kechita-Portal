@@ -21,10 +21,10 @@ interface CompanyInfo {
 const KECHITA_INFO: CompanyInfo = {
   name: 'Kechita Capital',
   website: 'www.kechitacapital.co.ke',
-  phone: '+254 700 000 000',
+  phone: '+254 797 553 815',
   email: 'info@kechita.co.ke',
   address: 'Nairobi, Kenya',
-  logoUrl: '/assets/KechitaLogo.svg'
+  logoUrl: '/src/assets/KechitaLogo.svg'
 };
 
 const SIGNATURE_QUOTES = [
